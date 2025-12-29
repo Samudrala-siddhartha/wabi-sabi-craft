@@ -1,0 +1,432 @@
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Plus, Pencil, Trash2, X } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import AdminLayout from '@/components/admin/AdminLayout';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
+import { Tables } from '@/integrations/supabase/types';
+
+type Product = Tables<'products'>;
+
+interface ProductFormData {
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  materials: string;
+  care_instructions: string;
+  images: string[];
+  in_stock: boolean;
+}
+
+const defaultFormData: ProductFormData = {
+  name: '',
+  description: '',
+  price: 0,
+  category: '',
+  materials: '',
+  care_instructions: '',
+  images: [],
+  in_stock: true,
+};
+
+const AdminProducts: React.FC = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
+  const [formData, setFormData] = useState<ProductFormData>(defaultFormData);
+  const [imageInput, setImageInput] = useState('');
+  const queryClient = useQueryClient();
+
+  const { data: products, isLoading } = useQuery({
+    queryKey: ['admin-products'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: ProductFormData) => {
+      const { error } = await supabase.from('products').insert([data]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      toast.success('Product created successfully');
+      closeForm();
+    },
+    onError: (error) => {
+      toast.error('Failed to create product: ' + error.message);
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: ProductFormData }) => {
+      const { error } = await supabase.from('products').update(data).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      toast.success('Product updated successfully');
+      closeForm();
+    },
+    onError: (error) => {
+      toast.error('Failed to update product: ' + error.message);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      toast.success('Product deleted successfully');
+      setDeleteProduct(null);
+    },
+    onError: (error) => {
+      toast.error('Failed to delete product: ' + error.message);
+    },
+  });
+
+  const openCreateForm = () => {
+    setEditingProduct(null);
+    setFormData(defaultFormData);
+    setImageInput('');
+    setIsFormOpen(true);
+  };
+
+  const openEditForm = (product: Product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      description: product.description ?? '',
+      price: product.price,
+      category: product.category ?? '',
+      materials: product.materials ?? '',
+      care_instructions: product.care_instructions ?? '',
+      images: product.images ?? [],
+      in_stock: product.in_stock ?? true,
+    });
+    setImageInput('');
+    setIsFormOpen(true);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditingProduct(null);
+    setFormData(defaultFormData);
+    setImageInput('');
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name.trim()) {
+      toast.error('Product name is required');
+      return;
+    }
+    if (editingProduct) {
+      updateMutation.mutate({ id: editingProduct.id, data: formData });
+    } else {
+      createMutation.mutate(formData);
+    }
+  };
+
+  const addImage = () => {
+    if (imageInput.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, imageInput.trim()],
+      }));
+      setImageInput('');
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+  };
+
+  return (
+    <AdminLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-display text-3xl font-semibold text-foreground">Products</h1>
+            <p className="text-muted-foreground mt-1">Manage your pottery collection</p>
+          </div>
+          <Button onClick={openCreateForm}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Product
+          </Button>
+        </div>
+
+        {/* Products Table */}
+        <Card>
+          <CardContent className="p-0">
+            {isLoading ? (
+              <div className="p-8 text-center text-muted-foreground">Loading...</div>
+            ) : products && products.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Product</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {products.map((product) => (
+                    <TableRow key={product.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          {product.images && product.images[0] ? (
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="h-12 w-12 rounded object-cover"
+                            />
+                          ) : (
+                            <div className="h-12 w-12 rounded bg-muted" />
+                          )}
+                          <div>
+                            <p className="font-medium">{product.name}</p>
+                            <p className="text-sm text-muted-foreground line-clamp-1">
+                              {product.description}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{product.category || '-'}</TableCell>
+                      <TableCell>₹{product.price}</TableCell>
+                      <TableCell>
+                        <span className={`text-xs px-2 py-1 rounded ${
+                          product.in_stock 
+                            ? 'bg-green-100 text-green-700' 
+                            : 'bg-red-100 text-red-700'
+                        }`}>
+                          {product.in_stock ? 'In Stock' : 'Out of Stock'}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openEditForm(product)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDeleteProduct(product)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="p-8 text-center">
+                <p className="text-muted-foreground">No products yet</p>
+                <Button onClick={openCreateForm} variant="outline" className="mt-4">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Your First Product
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Product Form Dialog */}
+        <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingProduct ? 'Edit Product' : 'Add New Product'}
+              </DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <Label htmlFor="name">Product Name *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter product name"
+                    required
+                  />
+                </div>
+                <div className="col-span-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Describe your product"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="price">Price (₹) *</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    min="0"
+                    value={formData.price}
+                    onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Input
+                    id="category"
+                    value={formData.category}
+                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                    placeholder="e.g., Bowls, Plates, Vases"
+                  />
+                </div>
+                <div className="col-span-2">
+                  <Label htmlFor="materials">Materials</Label>
+                  <Input
+                    id="materials"
+                    value={formData.materials}
+                    onChange={(e) => setFormData(prev => ({ ...prev, materials: e.target.value }))}
+                    placeholder="e.g., Stoneware clay, natural glazes"
+                  />
+                </div>
+                <div className="col-span-2">
+                  <Label htmlFor="care">Care Instructions</Label>
+                  <Textarea
+                    id="care"
+                    value={formData.care_instructions}
+                    onChange={(e) => setFormData(prev => ({ ...prev, care_instructions: e.target.value }))}
+                    placeholder="How to care for this product"
+                    rows={2}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <Label>Product Images</Label>
+                  <div className="flex gap-2 mt-1">
+                    <Input
+                      value={imageInput}
+                      onChange={(e) => setImageInput(e.target.value)}
+                      placeholder="Paste image URL"
+                    />
+                    <Button type="button" variant="secondary" onClick={addImage}>
+                      Add
+                    </Button>
+                  </div>
+                  {formData.images.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {formData.images.map((url, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={url}
+                            alt={`Product ${index + 1}`}
+                            className="h-20 w-20 object-cover rounded"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="col-span-2 flex items-center gap-3">
+                  <Switch
+                    id="in_stock"
+                    checked={formData.in_stock}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, in_stock: checked }))}
+                  />
+                  <Label htmlFor="in_stock">In Stock</Label>
+                </div>
+              </div>
+              <div className="flex justify-end gap-3">
+                <Button type="button" variant="outline" onClick={closeForm}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+                  {editingProduct ? 'Update Product' : 'Create Product'}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Confirmation */}
+        <AlertDialog open={!!deleteProduct} onOpenChange={() => setDeleteProduct(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Product</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete "{deleteProduct?.name}"? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => deleteProduct && deleteMutation.mutate(deleteProduct.id)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export default AdminProducts;
