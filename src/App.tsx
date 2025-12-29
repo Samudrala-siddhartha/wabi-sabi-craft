@@ -25,7 +25,7 @@ import AdminProducts from "./pages/admin/AdminProducts";
 import AdminWorkshops from "./pages/admin/AdminWorkshops";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminInquiries from "./pages/admin/AdminInquiries";
-
+import UploadProductImages from "./pages/admin/UploadProductImages";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -58,6 +58,7 @@ const App = () => (
               <Route path="/admin/workshops" element={<AdminWorkshops />} />
               <Route path="/admin/orders" element={<AdminOrders />} />
               <Route path="/admin/inquiries" element={<AdminInquiries />} />
+              <Route path="/admin/upload-images" element={<UploadProductImages />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
