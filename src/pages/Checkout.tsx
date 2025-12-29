@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,17 +11,56 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Loader2, ShoppingBag, ArrowRight, CreditCard } from 'lucide-react';
+import { Loader2, ShoppingBag, ArrowRight, CreditCard, CheckCircle, Shield } from 'lucide-react';
+import bashoLogo from '@/assets/basho-logo-contact.png';
+
+declare global {
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
+  }
+}
+
+interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => void;
+  prefill: {
+    name: string;
+    email: string;
+    contact: string;
+  };
+  theme: {
+    color: string;
+  };
+  modal?: {
+    ondismiss?: () => void;
+  };
+}
+
+interface RazorpayInstance {
+  open: () => void;
+  on: (event: string, handler: () => void) => void;
+}
+
+interface RazorpayResponse {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
 
 const addressSchema = z.object({
-  name: z.string().min(2, 'Name is required'),
-  address_line_1: z.string().min(5, 'Address is required'),
-  address_line_2: z.string().optional(),
-  city: z.string().min(2, 'City is required'),
-  state: z.string().min(2, 'State is required'),
-  postal_code: z.string().min(5, 'Postal code is required'),
-  country: z.string().min(2, 'Country is required'),
-  phone: z.string().min(10, 'Phone number is required'),
+  name: z.string().trim().min(2, 'Name is required').max(100),
+  address_line_1: z.string().trim().min(5, 'Address is required').max(200),
+  address_line_2: z.string().max(200).optional(),
+  city: z.string().trim().min(2, 'City is required').max(100),
+  state: z.string().trim().min(2, 'State is required').max(100),
+  postal_code: z.string().trim().min(5, 'Postal code is required').max(10),
+  country: z.string().trim().min(2, 'Country is required').max(100),
+  phone: z.string().trim().min(10, 'Phone number is required').max(15),
 });
 
 type AddressForm = z.infer<typeof addressSchema>;
@@ -31,11 +70,13 @@ const Checkout: React.FC = () => {
   const { items, subtotal, clearCart } = useCart();
   const { user } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm<AddressForm>({
     resolver: zodResolver(addressSchema),
     defaultValues: {
@@ -43,12 +84,108 @@ const Checkout: React.FC = () => {
     },
   });
 
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    script.onload = () => setRazorpayLoaded(true);
+    document.body.appendChild(script);
+    
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
       maximumFractionDigits: 0,
     }).format(price);
+  };
+
+  const initiateRazorpayPayment = async (orderId: string, amount: number, addressData: AddressForm) => {
+    try {
+      // Create Razorpay order via edge function
+      const { data: razorpayData, error: razorpayError } = await supabase.functions.invoke(
+        'create-razorpay-order',
+        {
+          body: {
+            orderId,
+            amount,
+            currency: 'INR',
+            receipt: orderId,
+            notes: {
+              customer_name: addressData.name,
+              customer_email: user?.email,
+            },
+          },
+        }
+      );
+
+      if (razorpayError || !razorpayData) {
+        throw new Error(razorpayError?.message || 'Failed to create payment order');
+      }
+
+      const options: RazorpayOptions = {
+        key: razorpayData.keyId,
+        amount: razorpayData.amount,
+        currency: razorpayData.currency,
+        name: 'Basho by Shivangi',
+        description: 'Handcrafted Pottery Purchase',
+        order_id: razorpayData.razorpayOrderId,
+        handler: async (response: RazorpayResponse) => {
+          try {
+            // Verify payment
+            const { data: verifyData, error: verifyError } = await supabase.functions.invoke(
+              'verify-razorpay-payment',
+              {
+                body: {
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  order_id: orderId,
+                },
+              }
+            );
+
+            if (verifyError) {
+              throw new Error('Payment verification failed');
+            }
+
+            clearCart();
+            toast.success('Payment successful! Your order has been placed.');
+            navigate('/activity');
+          } catch (error) {
+            console.error('Payment verification error:', error);
+            toast.error('Payment verification failed. Please contact support.');
+          }
+        },
+        prefill: {
+          name: addressData.name,
+          email: user?.email || '',
+          contact: addressData.phone,
+        },
+        theme: {
+          color: '#C97B5D',
+        },
+        modal: {
+          ondismiss: () => {
+            setIsProcessing(false);
+            toast.info('Payment cancelled');
+          },
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error('Razorpay error:', error);
+      throw error;
+    }
   };
 
   const onSubmit = async (data: AddressForm) => {
@@ -64,29 +201,35 @@ const Checkout: React.FC = () => {
       return;
     }
 
+    if (!razorpayLoaded) {
+      toast.error('Payment system is loading. Please try again.');
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
-      // Create order in database
-      const { error } = await supabase.from('orders').insert([{
-        user_id: user.id,
-        items: JSON.parse(JSON.stringify(items)),
-        subtotal: subtotal,
-        total: subtotal,
-        status: 'pending',
-        shipping_address: JSON.parse(JSON.stringify(data)),
-      }]);
+      // Create order in database first
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .insert([{
+          user_id: user.id,
+          items: JSON.parse(JSON.stringify(items)),
+          subtotal: subtotal,
+          total: subtotal,
+          status: 'pending',
+          shipping_address: JSON.parse(JSON.stringify(data)),
+        }])
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (orderError) throw orderError;
 
-      // Clear cart and show success
-      clearCart();
-      toast.success('Order placed successfully!');
-      navigate('/activity');
+      // Initiate Razorpay payment
+      await initiateRazorpayPayment(orderData.id, subtotal, data);
     } catch (error) {
       console.error('Error creating order:', error);
       toast.error('Failed to create order. Please try again.');
-    } finally {
       setIsProcessing(false);
     }
   };
@@ -103,10 +246,10 @@ const Checkout: React.FC = () => {
             Add some items to your cart before checking out.
           </p>
           <Button asChild size="lg" className="font-body">
-            <a href="/shop">
+            <Link to="/shop">
               Continue Shopping
               <ArrowRight className="ml-2 h-4 w-4" />
-            </a>
+            </Link>
           </Button>
         </div>
       </Layout>
@@ -124,10 +267,10 @@ const Checkout: React.FC = () => {
             Please sign in to complete your purchase.
           </p>
           <Button asChild size="lg" className="font-body">
-            <a href="/login">
+            <Link to="/login">
               Sign In
               <ArrowRight className="ml-2 h-4 w-4" />
-            </a>
+            </Link>
           </Button>
         </div>
       </Layout>
@@ -254,17 +397,25 @@ const Checkout: React.FC = () => {
                 </div>
               </div>
 
-              {/* Payment Notice */}
+              {/* Payment Info */}
               <div className="bg-secondary/50 rounded-lg border border-border p-6 mt-6">
-                <div className="flex items-center gap-3">
-                  <CreditCard className="h-6 w-6 text-primary" />
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-primary/10 rounded-lg">
+                    <Shield className="h-6 w-6 text-primary" />
+                  </div>
                   <div>
                     <h3 className="font-display text-lg font-semibold text-foreground">
-                      Payment Integration Coming Soon
+                      Secure Payment with Razorpay
                     </h3>
                     <p className="font-body text-sm text-muted-foreground mt-1">
-                      Razorpay payment will be enabled once API keys are configured.
+                      Your payment is processed securely. We accept all major cards, UPI, and net banking.
                     </p>
+                    <div className="flex items-center gap-2 mt-3">
+                      <CreditCard className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-body text-xs text-muted-foreground">
+                        Cards, UPI, Net Banking, Wallets
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -273,7 +424,16 @@ const Checkout: React.FC = () => {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="bg-card rounded-lg border border-border p-6 sticky top-24">
-                <h2 className="font-display text-2xl font-semibold text-foreground mb-6">
+                {/* Logo */}
+                <div className="flex justify-center mb-4">
+                  <img 
+                    src={bashoLogo} 
+                    alt="Basho by Shivangi" 
+                    className="h-12 w-auto object-contain"
+                  />
+                </div>
+
+                <h2 className="font-display text-2xl font-semibold text-foreground mb-6 text-center">
                   Order Summary
                 </h2>
 
@@ -312,7 +472,7 @@ const Checkout: React.FC = () => {
                   type="submit"
                   size="lg"
                   className="w-full mt-6 font-body"
-                  disabled={isProcessing}
+                  disabled={isProcessing || !razorpayLoaded}
                 >
                   {isProcessing ? (
                     <>
@@ -321,11 +481,15 @@ const Checkout: React.FC = () => {
                     </>
                   ) : (
                     <>
-                      Place Order
+                      Pay {formatPrice(subtotal)}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   )}
                 </Button>
+
+                <p className="text-center text-xs text-muted-foreground mt-4">
+                  By placing this order, you agree to our Terms & Conditions
+                </p>
               </div>
             </div>
           </div>
