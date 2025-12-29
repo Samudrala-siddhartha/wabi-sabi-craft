@@ -9,6 +9,7 @@ import { Loader2, Upload, Check, X } from 'lucide-react';
 // Import all product images
 import bookends from '@/assets/products/bookends.png';
 import ceramicVase from '@/assets/products/ceramic-vase.png';
+import ceramicVaseNew from '@/assets/products/ceramic-vase-new.png';
 import chipDip from '@/assets/products/chip-dip.png';
 import dinnerSet from '@/assets/products/dinner-set.png';
 import heartBowl from '@/assets/products/heart-bowl.png';
@@ -32,7 +33,7 @@ interface ImageUpload {
 
 const imageList: Omit<ImageUpload, 'status'>[] = [
   { name: 'Bookends', fileName: 'bookends.png', localPath: bookends, productName: 'Ceramic Bookends' },
-  { name: 'Ceramic Vase', fileName: 'ceramic-vase.png', localPath: ceramicVase, productName: 'Ceramic Vase' },
+  { name: 'Ceramic Vase', fileName: 'ceramic-vase-new.png', localPath: ceramicVaseNew, productName: 'Ceramic Vase' },
   { name: 'Chip & Dip', fileName: 'chip-dip.png', localPath: chipDip, productName: 'Chip & Dip Platter' },
   { name: 'Dinner Set', fileName: 'dinner-set.png', localPath: dinnerSet, productName: 'Complete Dinner Set' },
   { name: 'Heart Bowl', fileName: 'heart-bowl.png', localPath: heartBowl, productName: 'Heart Bowl' },
