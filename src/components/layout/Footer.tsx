@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Instagram, Phone } from 'lucide-react';
+import bashoLogo from '@/assets/basho-logo-contact.png';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -7,18 +9,27 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-secondary/50 border-t border-border">
       <div className="container-wide py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
-          {/* Brand */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-12">
+          {/* Brand with Logo */}
           <div className="md:col-span-2">
-            <Link to="/" className="inline-block">
-              <span className="font-display text-2xl font-semibold text-foreground">
-                Basho
-              </span>
-              <span className="font-display text-sm text-muted-foreground ml-2">
-                by Shivangi
-              </span>
-            </Link>
-            <p className="mt-4 text-muted-foreground font-body text-sm max-w-sm leading-relaxed">
+            <div className="flex items-center gap-4 mb-4">
+              <img 
+                src={bashoLogo} 
+                alt="Basho by Shivangi" 
+                className="h-16 w-auto object-contain"
+              />
+              <div>
+                <Link to="/" className="inline-block">
+                  <span className="font-display text-2xl font-semibold text-foreground">
+                    Basho
+                  </span>
+                  <span className="font-display text-sm text-muted-foreground ml-2">
+                    by Shivangi
+                  </span>
+                </Link>
+              </div>
+            </div>
+            <p className="text-muted-foreground font-body text-sm max-w-sm leading-relaxed">
               Handcrafted pottery inspired by the Japanese philosophy of Wabi-Sabi. 
               Each piece embraces imperfection and celebrates the beauty of natural forms.
             </p>
@@ -61,6 +72,35 @@ const Footer: React.FC = () => {
                 >
                   About
                 </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Us */}
+          <div>
+            <h4 className="font-display text-lg font-semibold text-foreground mb-4">
+              Contact Us
+            </h4>
+            <ul className="space-y-3">
+              <li>
+                <a 
+                  href="tel:+919879575601" 
+                  className="text-muted-foreground hover:text-primary transition-colors font-body text-sm flex items-center gap-2"
+                >
+                  <Phone className="h-4 w-4" />
+                  +91 9879575601
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://instagram.com/bashobyyshivangi" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors font-body text-sm flex items-center gap-2"
+                >
+                  <Instagram className="h-4 w-4" />
+                  @bashobyyshivangi
+                </a>
               </li>
             </ul>
           </div>

@@ -3,44 +3,49 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Layout from '@/components/layout/Layout';
+import heroImage from '@/assets/hero-shivangi.png';
+import founderImage from '@/assets/founder-shivangi.png';
 
 const Home: React.FC = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-secondary/30 to-accent/20" />
-        <div 
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}
-        />
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        {/* Background Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-transparent z-10" />
         
-        <div className="relative container-wide text-center px-4">
-          <div className="max-w-4xl mx-auto">
+        {/* Hero Image */}
+        <div className="absolute inset-0">
+          <img 
+            src={heroImage} 
+            alt="Shivangi with handcrafted pottery" 
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
+        
+        <div className="relative container-wide z-20 px-4">
+          <div className="max-w-2xl">
             <span className="inline-block font-body text-sm tracking-[0.3em] text-muted-foreground uppercase mb-6 animate-fade-in">
               Handcrafted Pottery
             </span>
-            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-foreground mb-6 leading-[1.1] animate-fade-in-up">
+            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-foreground mb-6 leading-[1.1] animate-fade-in">
               Beauty in
               <br />
               <span className="font-semibold italic text-primary">Imperfection</span>
             </h1>
-            <p className="font-body text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <p className="font-body text-lg md:text-xl text-muted-foreground max-w-xl mb-10 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
               Embrace the Japanese philosophy of Wabi-Sabi with our handcrafted pottery collection. 
               Each piece tells a story of intention, patience, and natural beauty.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <Button asChild size="lg" className="font-body text-base px-8 py-6">
                 <Link to="/shop">
                   Shop Collection
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="font-body text-base px-8 py-6">
+              <Button asChild variant="outline" size="lg" className="font-body text-base px-8 py-6 bg-background/80 backdrop-blur-sm">
                 <Link to="/workshops">
                   Explore Workshops
                 </Link>
@@ -50,9 +55,9 @@ const Home: React.FC = () => {
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex justify-center pt-2">
-            <div className="w-1 h-2 bg-muted-foreground/30 rounded-full" />
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-20">
+          <div className="w-6 h-10 rounded-full border-2 border-foreground/30 flex justify-center pt-2">
+            <div className="w-1 h-2 bg-foreground/30 rounded-full" />
           </div>
         </div>
       </section>
@@ -86,7 +91,7 @@ const Home: React.FC = () => {
             ].map((item, index) => (
               <div 
                 key={item.title}
-                className="text-center p-8 bg-card rounded-lg shadow-soft animate-fade-in-up"
+                className="text-center p-8 bg-card rounded-lg shadow-soft animate-fade-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <h3 className="font-display text-2xl font-semibold text-foreground mb-4">
@@ -169,7 +174,13 @@ const Home: React.FC = () => {
       <section className="py-20 md:py-32">
         <div className="container-wide">
           <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-            <div className="aspect-square bg-muted rounded-lg" />
+            <div className="aspect-square rounded-lg overflow-hidden">
+              <img 
+                src={founderImage} 
+                alt="Shivangi crafting pottery at the wheel" 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+            </div>
             <div>
               <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
                 The Artist
@@ -177,10 +188,11 @@ const Home: React.FC = () => {
               <h2 className="font-display text-4xl md:text-5xl font-light text-foreground mt-4 mb-6">
                 Meet Shivangi
               </h2>
+              <p className="font-body text-muted-foreground leading-relaxed mb-4">
+                <span className="font-semibold text-foreground">Basho</span> is a Japanese word meaning "A Place". It is also the name of the legendary Japanese haiku poet who found profound beauty in simplicity.
+              </p>
               <p className="font-body text-muted-foreground leading-relaxed mb-6">
-                With over a decade of experience in ceramic arts, Shivangi brings together 
-                traditional Japanese techniques with contemporary design sensibilities. 
-                Each piece is crafted with intention and care in her studio.
+                At Basho by Shivangi, we create handcrafted pottery that celebrates the Japanese philosophy of Wabi-Sabi—finding beauty in imperfection and embracing the natural cycle of growth and decay.
               </p>
               <Button asChild variant="outline" className="font-body">
                 <Link to="/about">
