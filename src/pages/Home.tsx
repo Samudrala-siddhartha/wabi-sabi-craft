@@ -1,0 +1,199 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Layout from '@/components/layout/Layout';
+
+const Home: React.FC = () => {
+  return (
+    <Layout>
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-secondary/30 to-accent/20" />
+        <div 
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        />
+        
+        <div className="relative container-wide text-center px-4">
+          <div className="max-w-4xl mx-auto">
+            <span className="inline-block font-body text-sm tracking-[0.3em] text-muted-foreground uppercase mb-6 animate-fade-in">
+              Handcrafted Pottery
+            </span>
+            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-foreground mb-6 leading-[1.1] animate-fade-in-up">
+              Beauty in
+              <br />
+              <span className="font-semibold italic text-primary">Imperfection</span>
+            </h1>
+            <p className="font-body text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              Embrace the Japanese philosophy of Wabi-Sabi with our handcrafted pottery collection. 
+              Each piece tells a story of intention, patience, and natural beauty.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <Button asChild size="lg" className="font-body text-base px-8 py-6">
+                <Link to="/shop">
+                  Shop Collection
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="font-body text-base px-8 py-6">
+                <Link to="/workshops">
+                  Explore Workshops
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Decorative Elements */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex justify-center pt-2">
+            <div className="w-1 h-2 bg-muted-foreground/30 rounded-full" />
+          </div>
+        </div>
+      </section>
+
+      {/* Philosophy Section */}
+      <section className="py-20 md:py-32 bg-secondary/30">
+        <div className="container-narrow">
+          <div className="text-center mb-16">
+            <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
+              Our Philosophy
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl font-light text-foreground mt-4">
+              The Art of Wabi-Sabi
+            </h2>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+            {[
+              {
+                title: 'Imperfection',
+                description: 'We celebrate the cracks, asymmetries, and unique characteristics that make each piece one-of-a-kind.',
+              },
+              {
+                title: 'Impermanence',
+                description: 'Our pottery honors the transient nature of all things, creating pieces meant to be used and cherished.',
+              },
+              {
+                title: 'Incompleteness',
+                description: 'Each creation leaves space for the owner to complete its story through daily use and appreciation.',
+              },
+            ].map((item, index) => (
+              <div 
+                key={item.title}
+                className="text-center p-8 bg-card rounded-lg shadow-soft animate-fade-in-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <h3 className="font-display text-2xl font-semibold text-foreground mb-4">
+                  {item.title}
+                </h3>
+                <p className="font-body text-muted-foreground leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Collection Preview */}
+      <section className="py-20 md:py-32">
+        <div className="container-wide">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+            <div>
+              <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
+                Curated Selection
+              </span>
+              <h2 className="font-display text-4xl md:text-5xl font-light text-foreground mt-4">
+                Featured Pieces
+              </h2>
+            </div>
+            <Link 
+              to="/shop" 
+              className="font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-2 mt-4 md:mt-0"
+            >
+              View All <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {[1, 2, 3].map((item) => (
+              <div 
+                key={item}
+                className="group aspect-[3/4] bg-muted rounded-lg overflow-hidden relative cursor-pointer"
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                  <h3 className="font-display text-xl text-primary-foreground">Coming Soon</h3>
+                  <p className="font-body text-primary-foreground/80 text-sm mt-1">Add your products</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Workshop CTA */}
+      <section className="py-20 md:py-32 bg-primary text-primary-foreground">
+        <div className="container-narrow text-center">
+          <span className="font-body text-sm tracking-[0.3em] uppercase opacity-80">
+            Learn the Craft
+          </span>
+          <h2 className="font-display text-4xl md:text-5xl font-light mt-4 mb-6">
+            Join Our Workshops
+          </h2>
+          <p className="font-body text-lg opacity-90 max-w-2xl mx-auto mb-10 leading-relaxed">
+            Discover the meditative art of pottery making in our intimate workshops. 
+            Learn traditional techniques while creating your own unique pieces.
+          </p>
+          <Button 
+            asChild 
+            variant="secondary" 
+            size="lg" 
+            className="font-body text-base px-8 py-6"
+          >
+            <Link to="/workshops">
+              Browse Workshops
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* About Preview */}
+      <section className="py-20 md:py-32">
+        <div className="container-wide">
+          <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+            <div className="aspect-square bg-muted rounded-lg" />
+            <div>
+              <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
+                The Artist
+              </span>
+              <h2 className="font-display text-4xl md:text-5xl font-light text-foreground mt-4 mb-6">
+                Meet Shivangi
+              </h2>
+              <p className="font-body text-muted-foreground leading-relaxed mb-6">
+                With over a decade of experience in ceramic arts, Shivangi brings together 
+                traditional Japanese techniques with contemporary design sensibilities. 
+                Each piece is crafted with intention and care in her studio.
+              </p>
+              <Button asChild variant="outline" className="font-body">
+                <Link to="/about">
+                  Learn More
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </Layout>
+  );
+};
+
+export default Home;
