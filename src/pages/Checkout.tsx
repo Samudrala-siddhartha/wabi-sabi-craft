@@ -70,11 +70,11 @@ const Checkout: React.FC = () => {
       // Create order in database
       const { error } = await supabase.from('orders').insert([{
         user_id: user.id,
-        items: items as unknown as Record<string, unknown>[],
+        items: JSON.parse(JSON.stringify(items)),
         subtotal: subtotal,
         total: subtotal,
         status: 'pending',
-        shipping_address: data as unknown as Record<string, unknown>,
+        shipping_address: JSON.parse(JSON.stringify(data)),
       }]);
 
       if (error) throw error;
