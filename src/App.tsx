@@ -20,6 +20,11 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminWorkshops from "./pages/admin/AdminWorkshops";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminInquiries from "./pages/admin/AdminInquiries";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +52,12 @@ const App = () => (
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route path="/terms" element={<Terms />} />
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/products" element={<AdminProducts />} />
+              <Route path="/admin/workshops" element={<AdminWorkshops />} />
+              <Route path="/admin/orders" element={<AdminOrders />} />
+              <Route path="/admin/inquiries" element={<AdminInquiries />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
