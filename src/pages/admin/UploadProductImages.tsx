@@ -25,7 +25,10 @@ import milkPourerNew from '@/assets/products/milk-pourer-new.png';
 import ovalTray from '@/assets/products/oval-tray.png';
 import ovalTrayNew from '@/assets/products/oval-tray-new.png';
 import stripedMugSet from '@/assets/products/striped-mug-set.png';
+import stripedMugSetNew from '@/assets/products/striped-mug-set-new.png';
 import stripedMug from '@/assets/products/striped-mug.png';
+import stripedMugNew from '@/assets/products/striped-mug-new.png';
+import chipDipNew from '@/assets/products/chip-dip-new.png';
 import teaPotSet from '@/assets/products/tea-pot-set.png';
 import teaPotSetNew from '@/assets/products/tea-pot-set-new.png';
 import wavyPlates from '@/assets/products/wavy-plates.png';
@@ -43,15 +46,15 @@ interface ImageUpload {
 const imageList: Omit<ImageUpload, 'status'>[] = [
   { name: 'Bookends', fileName: 'bookends-new.png', localPath: bookendsNew, productName: 'Ceramic Bookends' },
   { name: 'Ceramic Vase', fileName: 'ceramic-vase-new.png', localPath: ceramicVaseNew, productName: 'Ceramic Vase' },
-  { name: 'Chip & Dip', fileName: 'chip-dip.png', localPath: chipDip, productName: 'Chip & Dip Platter' },
+  { name: 'Chip & Dip', fileName: 'chip-dip-new.png', localPath: chipDipNew, productName: 'Chip & Dip Platter' },
   { name: 'Dinner Set', fileName: 'dinner-set-new.png', localPath: dinnerSetNew, productName: 'Complete Dinner Set' },
   { name: 'Heart Bowl', fileName: 'heart-bowl-new.png', localPath: heartBowlNew, productName: 'Heart Bowl' },
   { name: 'Lips Mug', fileName: 'lips-mug-new.png', localPath: lipsMugNew, productName: 'Lips Mug' },
   { name: 'Matcha Set', fileName: 'matcha-set-new.png', localPath: matchaSetNew, productName: 'Matcha Set' },
   { name: 'Milk Pourer', fileName: 'milk-pourer-new.png', localPath: milkPourerNew, productName: 'Milk Pourer' },
   { name: 'Oval Tray', fileName: 'oval-tray-new.png', localPath: ovalTrayNew, productName: 'Oval Tray' },
-  { name: 'Striped Mug Set', fileName: 'striped-mug-set.png', localPath: stripedMugSet, productName: 'Striped Coffee Mug Set' },
-  { name: 'Striped Mug', fileName: 'striped-mug.png', localPath: stripedMug, productName: 'Striped Mug' },
+  { name: 'Striped Mug Set', fileName: 'striped-mug-set-new.png', localPath: stripedMugSetNew, productName: 'Striped Coffee Mug Set' },
+  { name: 'Striped Mug', fileName: 'striped-mug-new.png', localPath: stripedMugNew, productName: 'Striped Mug' },
   { name: 'Tea Pot Set', fileName: 'tea-pot-set-new.png', localPath: teaPotSetNew, productName: 'Tea Pot Set' },
   { name: 'Wavy Plates', fileName: 'wavy-plates-new.png', localPath: wavyPlatesNew, productName: 'Wavy Plates' },
 ];
