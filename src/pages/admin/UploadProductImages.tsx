@@ -8,19 +8,28 @@ import { Loader2, Upload, Check, X } from 'lucide-react';
 
 // Import all product images
 import bookends from '@/assets/products/bookends.png';
+import bookendsNew from '@/assets/products/bookends-new.png';
 import ceramicVase from '@/assets/products/ceramic-vase.png';
 import ceramicVaseNew from '@/assets/products/ceramic-vase-new.png';
 import chipDip from '@/assets/products/chip-dip.png';
 import dinnerSet from '@/assets/products/dinner-set.png';
+import dinnerSetNew from '@/assets/products/dinner-set-new.png';
 import heartBowl from '@/assets/products/heart-bowl.png';
+import heartBowlNew from '@/assets/products/heart-bowl-new.png';
 import lipsMug from '@/assets/products/lips-mug.png';
+import lipsMugNew from '@/assets/products/lips-mug-new.png';
 import matchaSet from '@/assets/products/matcha-set.png';
+import matchaSetNew from '@/assets/products/matcha-set-new.png';
 import milkPourer from '@/assets/products/milk-pourer.png';
+import milkPourerNew from '@/assets/products/milk-pourer-new.png';
 import ovalTray from '@/assets/products/oval-tray.png';
+import ovalTrayNew from '@/assets/products/oval-tray-new.png';
 import stripedMugSet from '@/assets/products/striped-mug-set.png';
 import stripedMug from '@/assets/products/striped-mug.png';
 import teaPotSet from '@/assets/products/tea-pot-set.png';
+import teaPotSetNew from '@/assets/products/tea-pot-set-new.png';
 import wavyPlates from '@/assets/products/wavy-plates.png';
+import wavyPlatesNew from '@/assets/products/wavy-plates-new.png';
 
 interface ImageUpload {
   name: string;
@@ -32,19 +41,19 @@ interface ImageUpload {
 }
 
 const imageList: Omit<ImageUpload, 'status'>[] = [
-  { name: 'Bookends', fileName: 'bookends.png', localPath: bookends, productName: 'Ceramic Bookends' },
+  { name: 'Bookends', fileName: 'bookends-new.png', localPath: bookendsNew, productName: 'Ceramic Bookends' },
   { name: 'Ceramic Vase', fileName: 'ceramic-vase-new.png', localPath: ceramicVaseNew, productName: 'Ceramic Vase' },
   { name: 'Chip & Dip', fileName: 'chip-dip.png', localPath: chipDip, productName: 'Chip & Dip Platter' },
-  { name: 'Dinner Set', fileName: 'dinner-set.png', localPath: dinnerSet, productName: 'Complete Dinner Set' },
-  { name: 'Heart Bowl', fileName: 'heart-bowl.png', localPath: heartBowl, productName: 'Heart Bowl' },
-  { name: 'Lips Mug', fileName: 'lips-mug.png', localPath: lipsMug, productName: 'Lips Mug' },
-  { name: 'Matcha Set', fileName: 'matcha-set.png', localPath: matchaSet, productName: 'Matcha Set' },
-  { name: 'Milk Pourer', fileName: 'milk-pourer.png', localPath: milkPourer, productName: 'Milk Pourer' },
-  { name: 'Oval Tray', fileName: 'oval-tray.png', localPath: ovalTray, productName: 'Oval Tray' },
+  { name: 'Dinner Set', fileName: 'dinner-set-new.png', localPath: dinnerSetNew, productName: 'Complete Dinner Set' },
+  { name: 'Heart Bowl', fileName: 'heart-bowl-new.png', localPath: heartBowlNew, productName: 'Heart Bowl' },
+  { name: 'Lips Mug', fileName: 'lips-mug-new.png', localPath: lipsMugNew, productName: 'Lips Mug' },
+  { name: 'Matcha Set', fileName: 'matcha-set-new.png', localPath: matchaSetNew, productName: 'Matcha Set' },
+  { name: 'Milk Pourer', fileName: 'milk-pourer-new.png', localPath: milkPourerNew, productName: 'Milk Pourer' },
+  { name: 'Oval Tray', fileName: 'oval-tray-new.png', localPath: ovalTrayNew, productName: 'Oval Tray' },
   { name: 'Striped Mug Set', fileName: 'striped-mug-set.png', localPath: stripedMugSet, productName: 'Striped Coffee Mug Set' },
   { name: 'Striped Mug', fileName: 'striped-mug.png', localPath: stripedMug, productName: 'Striped Mug' },
-  { name: 'Tea Pot Set', fileName: 'tea-pot-set.png', localPath: teaPotSet, productName: 'Tea Pot Set' },
-  { name: 'Wavy Plates', fileName: 'wavy-plates.png', localPath: wavyPlates, productName: 'Wavy Plates' },
+  { name: 'Tea Pot Set', fileName: 'tea-pot-set-new.png', localPath: teaPotSetNew, productName: 'Tea Pot Set' },
+  { name: 'Wavy Plates', fileName: 'wavy-plates-new.png', localPath: wavyPlatesNew, productName: 'Wavy Plates' },
 ];
 
 const UploadProductImages: React.FC = () => {
