@@ -1,6 +1,21 @@
 import React from 'react';
 import Layout from '@/components/layout/Layout';
 import founderImage from '@/assets/founder-shivangi.png';
+import galleryTeacup from '@/assets/gallery-teacup.jpg';
+import galleryVase from '@/assets/gallery-vase.jpg';
+import galleryPlate from '@/assets/gallery-plate.jpg';
+import galleryBowls from '@/assets/gallery-bowls.jpg';
+import galleryPlanter from '@/assets/gallery-planter.jpg';
+import galleryWheel from '@/assets/gallery-wheel.jpg';
+
+const galleryImages = [
+  { src: galleryTeacup, alt: 'Handcrafted ceramic tea cup with wabi-sabi aesthetic' },
+  { src: galleryVase, alt: 'Organic shaped ceramic vase with terracotta glaze' },
+  { src: galleryPlate, alt: 'Artisan dinner plate with natural glaze variations' },
+  { src: galleryBowls, alt: 'Stack of handmade ceramic bowls' },
+  { src: galleryPlanter, alt: 'Ceramic planter with succulent' },
+  { src: galleryWheel, alt: 'Pottery wheel with clay being shaped' },
+];
 
 const About: React.FC = () => (
   <Layout>
@@ -77,6 +92,34 @@ const About: React.FC = () => (
               <p className="font-body text-muted-foreground leading-relaxed">
                 {item.description}
               </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* Gallery Section */}
+    <section className="py-16 md:py-24">
+      <div className="container-wide">
+        <div className="text-center mb-12">
+          <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
+            Our Creations
+          </span>
+          <h2 className="font-display text-4xl md:text-5xl font-light text-foreground mt-4">
+            Studio Gallery
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          {galleryImages.map((image, index) => (
+            <div 
+              key={index} 
+              className="aspect-square rounded-lg overflow-hidden group cursor-pointer"
+            >
+              <img 
+                src={image.src} 
+                alt={image.alt}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
             </div>
           ))}
         </div>
