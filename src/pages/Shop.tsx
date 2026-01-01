@@ -5,26 +5,38 @@ import { Product } from '@/types';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { EmptyProducts } from '@/components/EmptyState';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 const Shop: React.FC = () => {
+  useSEO(SEO_CONFIGS.shop);
+  
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('in_stock', true)
-        .order('created_at', { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('in_stock', true)
+          .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching products:', error);
-      } else {
-        setProducts(data as Product[]);
+        if (error) {
+          console.error('Error fetching products:', error);
+          setError('Unable to load products. Please try again.');
+        } else {
+          setProducts(data as Product[]);
+        }
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError('Unable to load products. Please try again.');
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchProducts();
@@ -112,22 +124,28 @@ const Shop: React.FC = () => {
                 </div>
               ))}
             </div>
-          ) : filteredProducts.length === 0 ? (
+          ) : error ? (
             <div className="text-center py-20">
-              <h2 className="font-display text-3xl text-foreground mb-4">
-                {selectedCategory ? `No ${selectedCategory} products found` : 'Collection Coming Soon'}
-              </h2>
-              <p className="font-body text-muted-foreground mb-6">
-                {selectedCategory 
-                  ? 'Try selecting a different category.' 
-                  : "We're preparing beautiful pieces for you. Check back soon!"}
-              </p>
-              {selectedCategory && (
+              <h2 className="font-display text-2xl text-foreground mb-4">Something went wrong</h2>
+              <p className="font-body text-muted-foreground mb-6">{error}</p>
+              <Button onClick={() => window.location.reload()}>Try Again</Button>
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            selectedCategory ? (
+              <div className="text-center py-20">
+                <h2 className="font-display text-3xl text-foreground mb-4">
+                  No {selectedCategory} products found
+                </h2>
+                <p className="font-body text-muted-foreground mb-6">
+                  Try selecting a different category.
+                </p>
                 <Button onClick={() => setSelectedCategory(null)} variant="outline">
                   View All Products
                 </Button>
-              )}
-            </div>
+              </div>
+            ) : (
+              <EmptyProducts />
+            )
           ) : (
             <>
               {selectedCategory && (

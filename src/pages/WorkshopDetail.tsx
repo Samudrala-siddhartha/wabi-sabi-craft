@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Calendar, Clock, MapPin, Users, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Workshop } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { useSEO } from '@/hooks/useSEO';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
@@ -18,6 +20,12 @@ const WorkshopDetail: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isBooking, setIsBooking] = useState(false);
   const [hasBooked, setHasBooked] = useState(false);
+
+  // Set SEO
+  useSEO({
+    title: workshop?.title || 'Workshop',
+    description: workshop?.description || 'Join our pottery workshop at Basho by Shivangi',
+  });
 
   useEffect(() => {
     const fetchWorkshop = async () => {
@@ -75,7 +83,7 @@ const WorkshopDetail: React.FC = () => {
       return;
     }
 
-    if (!workshop) return;
+    if (!workshop || workshop.spots_remaining <= 0) return;
 
     setIsBooking(true);
 
@@ -126,6 +134,9 @@ const WorkshopDetail: React.FC = () => {
     return null;
   }
 
+  const isFullyBooked = workshop.spots_remaining <= 0;
+  const isPastEvent = new Date(workshop.date) < new Date();
+
   return (
     <Layout>
       <div className="container-wide py-8 md:py-12">
@@ -141,7 +152,7 @@ const WorkshopDetail: React.FC = () => {
 
         <div className="grid md:grid-cols-2 gap-8 md:gap-16">
           {/* Image */}
-          <div className="aspect-video md:aspect-square bg-muted rounded-lg overflow-hidden">
+          <div className="aspect-video md:aspect-square bg-muted rounded-lg overflow-hidden relative">
             {workshop.image_url ? (
               <img
                 src={workshop.image_url}
@@ -153,6 +164,13 @@ const WorkshopDetail: React.FC = () => {
                 <span className="font-display text-muted-foreground text-4xl">
                   {workshop.title.charAt(0)}
                 </span>
+              </div>
+            )}
+            {(isFullyBooked || isPastEvent) && (
+              <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                <Badge variant="secondary" className="text-base px-4 py-2">
+                  {isPastEvent ? 'Past Event' : 'Fully Booked'}
+                </Badge>
               </div>
             )}
           </div>
@@ -204,23 +222,46 @@ const WorkshopDetail: React.FC = () => {
               <div className="flex items-center gap-3">
                 <Users className="h-5 w-5 text-primary" />
                 <span className="font-body text-foreground">
-                  {workshop.spots_remaining} of {workshop.capacity} spots available
+                  {isFullyBooked ? (
+                    <span className="text-destructive">No spots available</span>
+                  ) : (
+                    <>{workshop.spots_remaining} of {workshop.capacity} spots available</>
+                  )}
                 </span>
               </div>
             </div>
 
             {/* Booking */}
             <div className="mt-8">
-              {hasBooked ? (
-                <div className="bg-secondary/50 rounded-lg p-4">
-                  <p className="font-body text-foreground font-medium">
-                    ✓ You're booked for this workshop
-                  </p>
-                  <p className="font-body text-sm text-muted-foreground mt-1">
-                    Check your email for details and instructions.
+              {isPastEvent ? (
+                <div className="bg-muted rounded-lg p-4">
+                  <p className="font-body text-muted-foreground">
+                    This workshop has already taken place.
                   </p>
                 </div>
-              ) : workshop.spots_remaining > 0 ? (
+              ) : hasBooked ? (
+                <div className="bg-primary/10 rounded-lg p-4 flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary mt-0.5" />
+                  <div>
+                    <p className="font-body text-foreground font-medium">
+                      You're booked for this workshop
+                    </p>
+                    <p className="font-body text-sm text-muted-foreground mt-1">
+                      Check your email for details and instructions.
+                    </p>
+                  </div>
+                </div>
+              ) : isFullyBooked ? (
+                <div className="space-y-4">
+                  <Button size="lg" className="w-full font-body" disabled>
+                    <XCircle className="h-4 w-4 mr-2" />
+                    Fully Booked
+                  </Button>
+                  <p className="font-body text-sm text-muted-foreground text-center">
+                    All spots have been filled. Check our other workshops.
+                  </p>
+                </div>
+              ) : (
                 <Button
                   onClick={handleBooking}
                   size="lg"
@@ -228,10 +269,6 @@ const WorkshopDetail: React.FC = () => {
                   disabled={isBooking}
                 >
                   {isBooking ? 'Booking...' : 'Book Your Seat'}
-                </Button>
-              ) : (
-                <Button size="lg" className="w-full font-body" disabled>
-                  Fully Booked
                 </Button>
               )}
             </div>
