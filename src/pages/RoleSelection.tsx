@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import bashoLogo from '@/assets/basho-logo-contact.png';
+import bashoLogo from '@/assets/basho-logo-new.jpg';
 
 const RoleSelection: React.FC = () => {
   const navigate = useNavigate();

@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, ShoppingBag, ArrowRight, CreditCard, CheckCircle, Shield } from 'lucide-react';
-import bashoLogo from '@/assets/basho-logo-contact.png';
+import bashoLogo from '@/assets/basho-logo-new.jpg';
 
 declare global {
   interface Window {

@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, ArrowLeft, Mail } from 'lucide-react';
-import bashoLogo from '@/assets/basho-logo-contact.png';
+import bashoLogo from '@/assets/basho-logo-new.jpg';
 
 const forgotPasswordSchema = z.object({
   email: z.string().trim().email('Please enter a valid email').max(255),
