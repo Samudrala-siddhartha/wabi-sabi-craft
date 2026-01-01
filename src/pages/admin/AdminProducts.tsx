@@ -86,7 +86,9 @@ const AdminProducts: React.FC = () => {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Invalidate all product-related queries
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
       toast.success('Product created successfully');
       closeForm();
     },
@@ -101,7 +103,10 @@ const AdminProducts: React.FC = () => {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Invalidate all product-related queries to ensure UI updates everywhere
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['product'] });
       toast.success('Product updated successfully');
       closeForm();
     },

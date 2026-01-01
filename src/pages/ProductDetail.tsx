@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Minus, Plus, ShoppingBag, ArrowLeft, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/types';
@@ -15,10 +16,27 @@ const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+
+  const { data: product, isLoading, error } = useQuery({
+    queryKey: ['product', id],
+    queryFn: async () => {
+      if (!id) throw new Error('No product ID');
+      
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) throw new Error('Product not found');
+      
+      return data as Product;
+    },
+    enabled: !!id,
+  });
 
   // Set SEO
   useSEO({
@@ -26,30 +44,12 @@ const ProductDetail: React.FC = () => {
     description: product?.description || 'Handcrafted pottery from Basho by Shivangi',
   });
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      if (!id) return;
-
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error fetching product:', error);
-        toast.error('Failed to load product');
-      } else if (!data) {
-        navigate('/shop');
-        toast.error('Product not found');
-      } else {
-        setProduct(data as Product);
-      }
-      setIsLoading(false);
-    };
-
-    fetchProduct();
-  }, [id, navigate]);
+  // Handle error - redirect to shop
+  if (error && !isLoading) {
+    toast.error('Product not found');
+    navigate('/shop');
+    return null;
+  }
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-IN', {
