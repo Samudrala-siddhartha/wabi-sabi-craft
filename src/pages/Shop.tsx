@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/types';
 import Layout from '@/components/layout/Layout';
@@ -11,36 +12,21 @@ import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 const Shop: React.FC = () => {
   useSEO(SEO_CONFIGS.shop);
   
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .eq('in_stock', true)
-          .order('created_at', { ascending: false });
+  const { data: products = [], isLoading, error } = useQuery({
+    queryKey: ['products'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('in_stock', true)
+        .order('created_at', { ascending: false });
 
-        if (error) {
-          console.error('Error fetching products:', error);
-          setError('Unable to load products. Please try again.');
-        } else {
-          setProducts(data as Product[]);
-        }
-      } catch (err) {
-        console.error('Error fetching products:', err);
-        setError('Unable to load products. Please try again.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+      if (error) throw error;
+      return data as Product[];
+    },
+  });
 
   // Get unique categories
   const categories = useMemo(() => {
@@ -63,6 +49,8 @@ const Shop: React.FC = () => {
       maximumFractionDigits: 0,
     }).format(price);
   };
+
+  const errorMessage = error ? 'Unable to load products. Please try again.' : null;
 
   return (
     <Layout>
@@ -124,10 +112,10 @@ const Shop: React.FC = () => {
                 </div>
               ))}
             </div>
-          ) : error ? (
+          ) : errorMessage ? (
             <div className="text-center py-20">
               <h2 className="font-display text-2xl text-foreground mb-4">Something went wrong</h2>
-              <p className="font-body text-muted-foreground mb-6">{error}</p>
+              <p className="font-body text-muted-foreground mb-6">{errorMessage}</p>
               <Button onClick={() => window.location.reload()}>Try Again</Button>
             </div>
           ) : filteredProducts.length === 0 ? (

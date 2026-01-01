@@ -33,7 +33,7 @@ type SignupForm = z.infer<typeof signupSchema>;
 const Auth: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, signUp, user, role, needsRoleSelection, isLoading: authLoading } = useAuth();
   const [isLogin, setIsLogin] = useState(location.pathname !== '/signup');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -42,10 +42,23 @@ const Auth: React.FC = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) {
-      navigate('/');
+    if (!authLoading && user) {
+      // If user needs role selection, redirect there
+      if (needsRoleSelection) {
+        navigate('/role-selection');
+        return;
+      }
+      
+      // Otherwise redirect based on role
+      if (role === 'admin') {
+        navigate('/admin');
+      } else if (role === 'producer') {
+        navigate('/');
+      } else {
+        navigate('/');
+      }
     }
-  }, [user, navigate]);
+  }, [user, role, needsRoleSelection, authLoading, navigate]);
 
   const loginForm = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -63,7 +76,7 @@ const Auth: React.FC = () => {
       toast.error(error.message || 'Failed to sign in');
     } else {
       toast.success('Welcome back!');
-      navigate('/');
+      // Navigation will happen via useEffect when role is resolved
     }
     setIsLoading(false);
   };
@@ -86,12 +99,13 @@ const Auth: React.FC = () => {
       }
     } else {
       toast.success('Account created successfully!');
-      navigate('/');
+      // Navigation will happen via useEffect when role is resolved
     }
     setIsLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
+    // For signup, require role selection first
     if (!isLogin && !selectedRole) {
       setShowRoleSelection(true);
       toast.error('Please select a role before continuing with Google');
@@ -100,13 +114,19 @@ const Auth: React.FC = () => {
 
     setIsGoogleLoading(true);
     
-    const redirectUrl = `${window.location.origin}/`;
+    // For login, redirect to role-selection page after auth
+    // For signup, we store the role in localStorage temporarily
+    if (!isLogin && selectedRole) {
+      localStorage.setItem('pendingGoogleRole', selectedRole);
+    }
+    
+    const redirectUrl = `${window.location.origin}/auth-callback`;
     
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: redirectUrl,
-        queryParams: isLogin ? {} : {
+        queryParams: {
           access_type: 'offline',
           prompt: 'consent',
         },

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { AppRole } from '@/types';
@@ -10,20 +10,25 @@ interface AuthContextType {
   isLoading: boolean;
   isAdmin: boolean;
   isProducer: boolean;
+  needsRoleSelection: boolean;
   signUp: (email: string, password: string, role: AppRole, firstName?: string, lastName?: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  refreshRole: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const ADMIN_EMAIL = 'siddarthasamudrala@gmail.com';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [needsRoleSelection, setNeedsRoleSelection] = useState(false);
 
-  const fetchUserRole = async (userId: string) => {
+  const fetchUserRole = useCallback(async (userId: string, userEmail?: string | null): Promise<AppRole | null> => {
     try {
       const { data, error } = await supabase
         .from('user_roles')
@@ -36,12 +41,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return null;
       }
 
+      // If no role exists and this is admin email, create admin role
+      if (!data && userEmail === ADMIN_EMAIL) {
+        const { error: insertError } = await supabase
+          .from('user_roles')
+          .insert({ user_id: userId, role: 'admin' });
+        
+        if (!insertError) {
+          return 'admin';
+        }
+      }
+
       return data?.role as AppRole | null;
     } catch (error) {
       console.error('Error fetching user role:', error);
       return null;
     }
-  };
+  }, []);
+
+  const refreshRole = useCallback(async () => {
+    if (user) {
+      const fetchedRole = await fetchUserRole(user.id, user.email);
+      setRole(fetchedRole);
+      setNeedsRoleSelection(!fetchedRole);
+    }
+  }, [user, fetchUserRole]);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -53,10 +77,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Defer role fetching to avoid deadlock
         if (session?.user) {
           setTimeout(() => {
-            fetchUserRole(session.user.id).then(setRole);
+            fetchUserRole(session.user.id, session.user.email).then((fetchedRole) => {
+              setRole(fetchedRole);
+              setNeedsRoleSelection(!fetchedRole);
+            });
           }, 0);
         } else {
           setRole(null);
+          setNeedsRoleSelection(false);
         }
 
         if (event === 'INITIAL_SESSION') {
@@ -71,8 +99,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        fetchUserRole(session.user.id).then((role) => {
-          setRole(role);
+        fetchUserRole(session.user.id, session.user.email).then((fetchedRole) => {
+          setRole(fetchedRole);
+          setNeedsRoleSelection(!fetchedRole);
           setIsLoading(false);
         });
       } else {
@@ -81,7 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [fetchUserRole]);
 
   const signUp = async (
     email: string,
@@ -122,6 +151,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     setSession(null);
     setRole(null);
+    setNeedsRoleSelection(false);
   };
 
   const value: AuthContextType = {
@@ -131,9 +161,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isLoading,
     isAdmin: role === 'admin',
     isProducer: role === 'producer',
+    needsRoleSelection,
     signUp,
     signIn,
     signOut,
+    refreshRole,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
