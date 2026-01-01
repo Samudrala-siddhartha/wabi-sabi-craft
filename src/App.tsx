@@ -15,7 +15,6 @@ import Workshops from "./pages/Workshops";
 import WorkshopDetail from "./pages/WorkshopDetail";
 import Sessions from "./pages/Sessions";
 import Auth from "./pages/Auth";
-import AuthCallback from "./pages/AuthCallback";
 import RoleSelection from "./pages/RoleSelection";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -62,7 +61,6 @@ const App = () => (
                 <Route path="/sessions" element={<Sessions />} />
                 <Route path="/login" element={<Auth />} />
                 <Route path="/signup" element={<Auth />} />
-                <Route path="/auth-callback" element={<AuthCallback />} />
                 <Route path="/role-selection" element={<RoleSelection />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
