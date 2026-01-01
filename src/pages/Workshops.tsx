@@ -6,9 +6,14 @@ import { Workshop } from '@/types';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { EmptyWorkshops } from '@/components/EmptyState';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 import { format } from 'date-fns';
 
 const Workshops: React.FC = () => {
+  useSEO(SEO_CONFIGS.workshops);
+  
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -77,17 +82,7 @@ const Workshops: React.FC = () => {
               ))}
             </div>
           ) : workshops.length === 0 ? (
-            <div className="text-center py-20">
-              <h2 className="font-display text-3xl text-foreground mb-4">
-                No Upcoming Workshops
-              </h2>
-              <p className="font-body text-muted-foreground mb-8">
-                New workshops are being planned. Check back soon or inquire about private sessions.
-              </p>
-              <Button asChild variant="outline" className="font-body">
-                <Link to="/sessions">Explore Private Sessions</Link>
-              </Button>
-            </div>
+            <EmptyWorkshops />
           ) : (
             <div className="space-y-6">
               {workshops.map((workshop) => (

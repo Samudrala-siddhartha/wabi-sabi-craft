@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Layout from '@/components/layout/Layout';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 import heroImage from '@/assets/hero-shivangi.png';
 import founderImage from '@/assets/founder-shivangi.png';
 
 const Home: React.FC = () => {
+  useSEO(SEO_CONFIGS.home);
+  
   return (
     <Layout>
       {/* Hero Section */}

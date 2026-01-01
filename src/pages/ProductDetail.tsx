@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Minus, Plus, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { Minus, Plus, ShoppingBag, ArrowLeft, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { useSEO } from '@/hooks/useSEO';
 import { toast } from 'sonner';
 
 const ProductDetail: React.FC = () => {
@@ -17,6 +19,12 @@ const ProductDetail: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+
+  // Set SEO
+  useSEO({
+    title: product?.name || 'Product',
+    description: product?.description || 'Handcrafted pottery from Basho by Shivangi',
+  });
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -52,7 +60,7 @@ const ProductDetail: React.FC = () => {
   };
 
   const handleAddToCart = () => {
-    if (!product) return;
+    if (!product || !product.in_stock) return;
     
     for (let i = 0; i < quantity; i++) {
       addItem({
@@ -67,6 +75,7 @@ const ProductDetail: React.FC = () => {
   };
 
   const handleBuyNow = () => {
+    if (!product || !product.in_stock) return;
     handleAddToCart();
     navigate('/cart');
   };
@@ -93,6 +102,8 @@ const ProductDetail: React.FC = () => {
     return null;
   }
 
+  const isAvailable = product.in_stock;
+
   return (
     <Layout>
       <div className="container-wide py-8 md:py-12">
@@ -109,7 +120,7 @@ const ProductDetail: React.FC = () => {
         <div className="grid md:grid-cols-2 gap-8 md:gap-16">
           {/* Image Gallery */}
           <div className="space-y-4">
-            <div className="aspect-square bg-muted rounded-lg overflow-hidden">
+            <div className="aspect-square bg-muted rounded-lg overflow-hidden relative">
               {product.images && product.images.length > 0 ? (
                 <img
                   src={product.images[selectedImage]}
@@ -121,6 +132,13 @@ const ProductDetail: React.FC = () => {
                   <span className="font-display text-muted-foreground text-4xl">
                     {product.name.charAt(0)}
                   </span>
+                </div>
+              )}
+              {!isAvailable && (
+                <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                  <Badge variant="secondary" className="text-base px-4 py-2">
+                    Currently Unavailable
+                  </Badge>
                 </div>
               )}
             </div>
@@ -148,12 +166,26 @@ const ProductDetail: React.FC = () => {
 
           {/* Product Info */}
           <div>
-            <h1 className="font-display text-4xl md:text-5xl font-light text-foreground">
-              {product.name}
-            </h1>
+            <div className="flex items-start justify-between gap-4">
+              <h1 className="font-display text-4xl md:text-5xl font-light text-foreground">
+                {product.name}
+              </h1>
+              {product.category && (
+                <Badge variant="secondary" className="font-body text-xs shrink-0">
+                  {product.category}
+                </Badge>
+              )}
+            </div>
             <p className="font-body text-2xl text-primary mt-4">
               {formatPrice(product.price)}
             </p>
+
+            {!isAvailable && (
+              <div className="mt-4 flex items-center gap-2 text-muted-foreground bg-muted p-3 rounded-lg">
+                <AlertCircle className="h-5 w-5" />
+                <span className="font-body">This item is currently unavailable</span>
+              </div>
+            )}
 
             {product.description && (
               <p className="font-body text-muted-foreground mt-6 leading-relaxed">
@@ -189,44 +221,57 @@ const ProductDetail: React.FC = () => {
 
             {/* Quantity & Actions */}
             <div className="mt-8 space-y-4">
-              <div className="flex items-center gap-4">
-                <span className="font-body text-foreground">Quantity</span>
-                <div className="flex items-center border border-border rounded-md">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-2 hover:bg-muted transition-colors"
-                    disabled={quantity <= 1}
-                  >
-                    <Minus className="h-4 w-4" />
-                  </button>
-                  <span className="px-4 font-body">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="p-2 hover:bg-muted transition-colors"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
+              {isAvailable ? (
+                <>
+                  <div className="flex items-center gap-4">
+                    <span className="font-body text-foreground">Quantity</span>
+                    <div className="flex items-center border border-border rounded-md">
+                      <button
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="p-2 hover:bg-muted transition-colors"
+                        disabled={quantity <= 1}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+                      <span className="px-4 font-body">{quantity}</span>
+                      <button
+                        onClick={() => setQuantity(quantity + 1)}
+                        className="p-2 hover:bg-muted transition-colors"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
 
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  onClick={handleAddToCart}
-                  variant="outline"
-                  size="lg"
-                  className="flex-1 font-body"
-                >
-                  <ShoppingBag className="h-4 w-4 mr-2" />
-                  Add to Cart
-                </Button>
-                <Button
-                  onClick={handleBuyNow}
-                  size="lg"
-                  className="flex-1 font-body"
-                >
-                  Buy Now
-                </Button>
-              </div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button
+                      onClick={handleAddToCart}
+                      variant="outline"
+                      size="lg"
+                      className="flex-1 font-body"
+                    >
+                      <ShoppingBag className="h-4 w-4 mr-2" />
+                      Add to Cart
+                    </Button>
+                    <Button
+                      onClick={handleBuyNow}
+                      size="lg"
+                      className="flex-1 font-body"
+                    >
+                      Buy Now
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-4">
+                  <Button size="lg" className="w-full font-body" disabled>
+                    Currently Unavailable
+                  </Button>
+                  <p className="font-body text-sm text-muted-foreground text-center">
+                    This item will be available soon. Check back later.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

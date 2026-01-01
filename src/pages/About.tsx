@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '@/components/layout/Layout';
 import { MapPin, Phone, Clock, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 import founderImage from '@/assets/founder-shivangi.png';
 import galleryTeacup from '@/assets/gallery-teacup.jpg';
 import galleryVase from '@/assets/gallery-vase.jpg';
@@ -30,7 +31,10 @@ const studioAddress = {
   embedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.1234567890123!2d72.7654321!3d21.1234567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjHCsDA3JzMwLjQiTiA3MsKwNDUnNTUuNiJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin',
 };
 
-const About: React.FC = () => (
+const About: React.FC = () => {
+  useSEO(SEO_CONFIGS.about);
+  
+  return (
   <Layout>
     {/* Hero Section */}
     <section className="py-16 md:py-24 bg-secondary/30">
@@ -231,6 +235,7 @@ const About: React.FC = () => (
       </div>
     </section>
   </Layout>
-);
+  );
+};
 
 export default About;
