@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Menu, X, User, LogOut } from 'lucide-react';
+import bashoLogo from '@/assets/basho-logo.jpg';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
@@ -36,12 +37,11 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="font-display text-2xl md:text-3xl font-semibold text-foreground tracking-wide">
-              Basho
-            </span>
-            <span className="hidden sm:inline font-display text-sm text-muted-foreground ml-2 tracking-widest">
-              by Shivangi
-            </span>
+            <img 
+              src={bashoLogo} 
+              alt="Basho by Shivangi" 
+              className="h-10 md:h-12 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
