@@ -215,20 +215,6 @@ const About: React.FC = () => {
                   </p>
                 </div>
               </div>
-
-              <Button 
-                asChild 
-                className="w-full sm:w-auto mt-4"
-              >
-                <a 
-                  href={studioAddress.mapUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Navigation className="h-4 w-4 mr-2" />
-                  Open in Google Maps
-                </a>
-              </Button>
             </div>
           </div>
         </div>
