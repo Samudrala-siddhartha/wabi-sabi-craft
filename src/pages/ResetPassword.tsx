@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, CheckCircle } from 'lucide-react';
-import bashoLogo from '@/assets/basho-logo-contact.png';
+import bashoLogo from '@/assets/basho-logo-new.jpg';
 
 const resetPasswordSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters').max(100),
