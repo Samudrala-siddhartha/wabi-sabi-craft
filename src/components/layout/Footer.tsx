@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Phone } from 'lucide-react';
-import bashoLogo from '@/assets/basho-logo-contact.png';
+import bashoLogo from '@/assets/basho-logo.jpg';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
