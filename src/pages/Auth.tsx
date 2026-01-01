@@ -202,6 +202,15 @@ const Auth: React.FC = () => {
                 <Button type="submit" className="w-full font-body" disabled={isLoading}>
                   {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
                 </Button>
+
+                <div className="text-right">
+                  <Link
+                    to="/forgot-password"
+                    className="font-body text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
               </form>
             ) : (
               <form onSubmit={signupForm.handleSubmit(handleSignup)} className="space-y-4">
