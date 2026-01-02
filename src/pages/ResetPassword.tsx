@@ -65,7 +65,7 @@ const ResetPassword: React.FC = () => {
       // Sign out and redirect to login after a delay
       setTimeout(async () => {
         await supabase.auth.signOut();
-        navigate('/auth');
+        navigate('/login');
       }, 2000);
     }
     
