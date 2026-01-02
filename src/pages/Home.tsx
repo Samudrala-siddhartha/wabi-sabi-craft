@@ -26,7 +26,7 @@ const Home: React.FC = () => {
     if (user) {
       navigate('/shop');
     } else {
-      navigate('/auth');
+      navigate('/login');
     }
   };
   

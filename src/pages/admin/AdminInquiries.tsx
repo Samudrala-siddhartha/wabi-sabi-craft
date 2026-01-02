@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -186,6 +187,7 @@ const AdminInquiries: React.FC = () => {
           <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>Inquiry Details</DialogTitle>
+              <DialogDescription>View and manage this session inquiry</DialogDescription>
             </DialogHeader>
             {selectedInquiry && (
               <div className="space-y-6">
