@@ -1,14 +1,34 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Layout from '@/components/layout/Layout';
 import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
+import { useAuth } from '@/contexts/AuthContext';
 import heroImage from '@/assets/hero-shivangi.png';
 import founderImage from '@/assets/founder-shivangi.png';
+import ceramicVaseImage from '@/assets/products/ceramic-vase-new.png';
+import matchaSetImage from '@/assets/products/matcha-set-new.png';
+import teaPotSetImage from '@/assets/products/tea-pot-set-new.png';
 
 const Home: React.FC = () => {
   useSEO(SEO_CONFIGS.home);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const featuredProducts = [
+    { id: 1, name: 'Ceramic Vase', image: ceramicVaseImage },
+    { id: 2, name: 'Matcha Set', image: matchaSetImage },
+    { id: 3, name: 'Tea Pot Set', image: teaPotSetImage },
+  ];
+
+  const handleProductClick = () => {
+    if (user) {
+      navigate('/shop');
+    } else {
+      navigate('/auth');
+    }
+  };
   
   return (
     <Layout>
@@ -130,15 +150,23 @@ const Home: React.FC = () => {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {[1, 2, 3].map((item) => (
+            {featuredProducts.map((product) => (
               <div 
-                key={item}
-                className="group aspect-[3/4] bg-muted rounded-lg overflow-hidden relative cursor-pointer"
+                key={product.id}
+                onClick={handleProductClick}
+                className="group aspect-[3/4] bg-muted rounded-lg overflow-hidden relative cursor-pointer hover-scale"
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <h3 className="font-display text-xl text-primary-foreground">Coming Soon</h3>
-                  <p className="font-body text-primary-foreground/80 text-sm mt-1">Add your products</p>
+                  <h3 className="font-display text-xl text-primary-foreground">{product.name}</h3>
+                  <p className="font-body text-primary-foreground/80 text-sm mt-1">
+                    {user ? 'View in Shop' : 'Sign up to shop'}
+                  </p>
                 </div>
               </div>
             ))}
