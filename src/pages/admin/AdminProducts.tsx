@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
@@ -33,10 +34,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Tables } from '@/integrations/supabase/types';
-
-type Product = Tables<'products'>;
 
 interface ProductFormData {
   name: string;
@@ -47,6 +52,7 @@ interface ProductFormData {
   care_instructions: string;
   images: string[];
   in_stock: boolean;
+  status: 'active' | 'coming_soon';
 }
 
 const defaultFormData: ProductFormData = {
@@ -58,14 +64,17 @@ const defaultFormData: ProductFormData = {
   care_instructions: '',
   images: [],
   in_stock: true,
+  status: 'active',
 };
 
 const AdminProducts: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
+  const [deleteProduct, setDeleteProduct] = useState<any | null>(null);
   const [formData, setFormData] = useState<ProductFormData>(defaultFormData);
   const [imageInput, setImageInput] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
   const { data: products, isLoading } = useQuery({
@@ -86,9 +95,10 @@ const AdminProducts: React.FC = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      // Invalidate all product-related queries
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['coming-soon-products'] });
+      queryClient.invalidateQueries({ queryKey: ['featured-products'] });
       toast.success('Product created successfully');
       closeForm();
     },
@@ -107,6 +117,8 @@ const AdminProducts: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
       queryClient.invalidateQueries({ queryKey: ['products'] });
       queryClient.invalidateQueries({ queryKey: ['product'] });
+      queryClient.invalidateQueries({ queryKey: ['coming-soon-products'] });
+      queryClient.invalidateQueries({ queryKey: ['featured-products'] });
       toast.success('Product updated successfully');
       closeForm();
     },
@@ -122,6 +134,9 @@ const AdminProducts: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['coming-soon-products'] });
+      queryClient.invalidateQueries({ queryKey: ['featured-products'] });
       toast.success('Product deleted successfully');
       setDeleteProduct(null);
     },
@@ -137,7 +152,7 @@ const AdminProducts: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const openEditForm = (product: Product) => {
+  const openEditForm = (product: any) => {
     setEditingProduct(product);
     setFormData({
       name: product.name,
@@ -148,6 +163,7 @@ const AdminProducts: React.FC = () => {
       care_instructions: product.care_instructions ?? '',
       images: product.images ?? [],
       in_stock: product.in_stock ?? true,
+      status: product.status ?? 'active',
     });
     setImageInput('');
     setIsFormOpen(true);
@@ -172,9 +188,6 @@ const AdminProducts: React.FC = () => {
       createMutation.mutate(formData);
     }
   };
-
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const addImage = () => {
     if (imageInput.trim()) {
@@ -219,6 +232,7 @@ const AdminProducts: React.FC = () => {
         uploadedUrls.push(publicUrl);
       }
 
+      // Update form data with new images
       setFormData(prev => ({
         ...prev,
         images: [...prev.images, ...uploadedUrls],
@@ -239,9 +253,9 @@ const AdminProducts: React.FC = () => {
     <AdminLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="font-display text-3xl font-semibold text-foreground">Products</h1>
+            <h1 className="font-display text-2xl sm:text-3xl font-semibold text-foreground">Products</h1>
             <p className="text-muted-foreground mt-1">Manage your pottery collection</p>
           </div>
           <Button onClick={openCreateForm}>
@@ -256,69 +270,81 @@ const AdminProducts: React.FC = () => {
             {isLoading ? (
               <div className="p-8 text-center text-muted-foreground">Loading...</div>
             ) : products && products.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Product</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products.map((product) => (
-                    <TableRow key={product.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          {product.images && product.images[0] ? (
-                            <img
-                              src={product.images[0]}
-                              alt={product.name}
-                              className="h-12 w-12 rounded object-cover"
-                            />
-                          ) : (
-                            <div className="h-12 w-12 rounded bg-muted" />
-                          )}
-                          <div>
-                            <p className="font-medium">{product.name}</p>
-                            <p className="text-sm text-muted-foreground line-clamp-1">
-                              {product.description}
-                            </p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{product.category || '-'}</TableCell>
-                      <TableCell>₹{product.price}</TableCell>
-                      <TableCell>
-                        <span className={`text-xs px-2 py-1 rounded ${
-                          product.in_stock 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-red-100 text-red-700'
-                        }`}>
-                          {product.in_stock ? 'In Stock' : 'Out of Stock'}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openEditForm(product)}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setDeleteProduct(product)}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Product</TableHead>
+                      <TableHead className="hidden sm:table-cell">Category</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {products.map((product) => (
+                      <TableRow key={product.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            {product.images && product.images[0] ? (
+                              <img
+                                src={product.images[0]}
+                                alt={product.name}
+                                className="h-12 w-12 rounded object-cover flex-shrink-0"
+                              />
+                            ) : (
+                              <div className="h-12 w-12 rounded bg-muted flex-shrink-0" />
+                            )}
+                            <div className="min-w-0">
+                              <p className="font-medium truncate">{product.name}</p>
+                              <p className="text-sm text-muted-foreground line-clamp-1 hidden sm:block">
+                                {product.description}
+                              </p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">{product.category || '-'}</TableCell>
+                        <TableCell>₹{product.price}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-col gap-1">
+                            {product.status === 'coming_soon' ? (
+                              <Badge className="bg-primary/10 text-primary border-0 w-fit">
+                                Coming Soon
+                              </Badge>
+                            ) : (
+                              <Badge 
+                                className={`w-fit ${
+                                  product.in_stock 
+                                    ? 'bg-green-100 text-green-700 border-0' 
+                                    : 'bg-red-100 text-red-700 border-0'
+                                }`}
+                              >
+                                {product.in_stock ? 'In Stock' : 'Out of Stock'}
+                              </Badge>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openEditForm(product)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeleteProduct(product)}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             ) : (
               <div className="p-8 text-center">
                 <p className="text-muted-foreground">No products yet</p>
@@ -340,8 +366,8 @@ const AdminProducts: React.FC = () => {
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="col-span-1 sm:col-span-2">
                   <Label htmlFor="name">Product Name *</Label>
                   <Input
                     id="name"
@@ -351,7 +377,7 @@ const AdminProducts: React.FC = () => {
                     required
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Label htmlFor="description">Description</Label>
                   <Textarea
                     id="description"
@@ -381,7 +407,7 @@ const AdminProducts: React.FC = () => {
                     placeholder="e.g., Bowls, Plates, Vases"
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Label htmlFor="materials">Materials</Label>
                   <Input
                     id="materials"
@@ -390,7 +416,7 @@ const AdminProducts: React.FC = () => {
                     placeholder="e.g., Stoneware clay, natural glazes"
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Label htmlFor="care">Care Instructions</Label>
                   <Textarea
                     id="care"
@@ -400,7 +426,7 @@ const AdminProducts: React.FC = () => {
                     rows={2}
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Label>Product Images</Label>
                   <div className="flex gap-2 mt-1">
                     <Input
@@ -462,13 +488,37 @@ const AdminProducts: React.FC = () => {
                     </div>
                   )}
                 </div>
-                <div className="col-span-2 flex items-center gap-3">
+                
+                {/* Status */}
+                <div className="col-span-1 sm:col-span-2">
+                  <Label htmlFor="status">Product Status</Label>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(value: 'active' | 'coming_soon') => 
+                      setFormData(prev => ({ ...prev, status: value }))
+                    }
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active (Available for sale)</SelectItem>
+                      <SelectItem value="coming_soon">Coming Soon (Featured on homepage)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="col-span-1 sm:col-span-2 flex items-center gap-3">
                   <Switch
                     id="in_stock"
                     checked={formData.in_stock}
                     onCheckedChange={(checked) => setFormData(prev => ({ ...prev, in_stock: checked }))}
+                    disabled={formData.status === 'coming_soon'}
                   />
                   <Label htmlFor="in_stock">In Stock</Label>
+                  {formData.status === 'coming_soon' && (
+                    <span className="text-sm text-muted-foreground">(Disabled for Coming Soon products)</span>
+                  )}
                 </div>
               </div>
               <div className="flex justify-end gap-3">

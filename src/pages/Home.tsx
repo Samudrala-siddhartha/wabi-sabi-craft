@@ -1,28 +1,60 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import Layout from '@/components/layout/Layout';
 import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-shivangi.png';
 import founderImage from '@/assets/founder-shivangi.png';
-import ceramicVaseImage from '@/assets/products/ceramic-vase-new.png';
-import matchaSetImage from '@/assets/products/matcha-set-new.png';
-import teaPotSetImage from '@/assets/products/tea-pot-set-new.png';
 
 const Home: React.FC = () => {
   useSEO(SEO_CONFIGS.home);
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const featuredProducts = [
-    { id: 1, name: 'Ceramic Vase', image: ceramicVaseImage },
-    { id: 2, name: 'Matcha Set', image: matchaSetImage },
-    { id: 3, name: 'Tea Pot Set', image: teaPotSetImage },
-  ];
+  // Fetch coming soon products from database
+  const { data: comingSoonProducts } = useQuery({
+    queryKey: ['coming-soon-products'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('status', 'coming_soon')
+        .limit(3);
+      if (error) throw error;
+      return data;
+    },
+  });
 
-  const handleProductClick = () => {
+  // Fetch featured active products from database
+  const { data: featuredProducts } = useQuery({
+    queryKey: ['featured-products'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('status', 'active')
+        .eq('in_stock', true)
+        .limit(3);
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const handleProductClick = (productId: string, isComingSoon: boolean) => {
+    if (!user) {
+      navigate('/signup');
+      return;
+    }
+    
+    navigate(`/product/${productId}`);
+  };
+
+  const handleViewAllClick = () => {
     if (user) {
       navigate('/shop');
     } else {
@@ -85,8 +117,58 @@ const Home: React.FC = () => {
         </div>
       </section>
 
+      {/* Coming Soon / Featured Pieces Section */}
+      {comingSoonProducts && comingSoonProducts.length > 0 && (
+        <section className="py-20 md:py-32 bg-secondary/30">
+          <div className="container-wide">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+              <div>
+                <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
+                  Sneak Peek
+                </span>
+                <h2 className="font-display text-4xl md:text-5xl font-light text-foreground mt-4">
+                  Coming Soon
+                </h2>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {comingSoonProducts.map((product) => (
+                <div 
+                  key={product.id}
+                  onClick={() => handleProductClick(product.id, true)}
+                  className="group aspect-[3/4] bg-muted rounded-lg overflow-hidden relative cursor-pointer hover-scale"
+                >
+                  {product.images && product.images[0] ? (
+                    <img 
+                      src={product.images[0]} 
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <span className="text-muted-foreground">No image</span>
+                    </div>
+                  )}
+                  <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">
+                    Coming Soon
+                  </Badge>
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <h3 className="font-display text-xl text-primary-foreground">{product.name}</h3>
+                    <p className="font-body text-primary-foreground/80 text-sm mt-1">
+                      {user ? 'View details' : 'Sign up to see more'}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Philosophy Section */}
-      <section className="py-20 md:py-32 bg-secondary/30">
+      <section className="py-20 md:py-32">
         <div className="container-narrow">
           <div className="text-center mb-16">
             <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
@@ -130,49 +212,57 @@ const Home: React.FC = () => {
       </section>
 
       {/* Featured Collection Preview */}
-      <section className="py-20 md:py-32">
-        <div className="container-wide">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
-            <div>
-              <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
-                Curated Selection
-              </span>
-              <h2 className="font-display text-4xl md:text-5xl font-light text-foreground mt-4">
-                Featured Pieces
-              </h2>
-            </div>
-            <Link 
-              to="/shop" 
-              className="font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-2 mt-4 md:mt-0"
-            >
-              View All <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {featuredProducts.map((product) => (
-              <div 
-                key={product.id}
-                onClick={handleProductClick}
-                className="group aspect-[3/4] bg-muted rounded-lg overflow-hidden relative cursor-pointer hover-scale"
-              >
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <h3 className="font-display text-xl text-primary-foreground">{product.name}</h3>
-                  <p className="font-body text-primary-foreground/80 text-sm mt-1">
-                    {user ? 'View in Shop' : 'Sign up to shop'}
-                  </p>
-                </div>
+      {featuredProducts && featuredProducts.length > 0 && (
+        <section className="py-20 md:py-32 bg-secondary/30">
+          <div className="container-wide">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+              <div>
+                <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
+                  Curated Selection
+                </span>
+                <h2 className="font-display text-4xl md:text-5xl font-light text-foreground mt-4">
+                  Featured Pieces
+                </h2>
               </div>
-            ))}
+              <button
+                onClick={handleViewAllClick}
+                className="font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-2 mt-4 md:mt-0"
+              >
+                View All <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {featuredProducts.map((product) => (
+                <div 
+                  key={product.id}
+                  onClick={() => handleProductClick(product.id, false)}
+                  className="group aspect-[3/4] bg-muted rounded-lg overflow-hidden relative cursor-pointer hover-scale"
+                >
+                  {product.images && product.images[0] ? (
+                    <img 
+                      src={product.images[0]} 
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <span className="text-muted-foreground">No image</span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <h3 className="font-display text-xl text-primary-foreground">{product.name}</h3>
+                    <p className="font-body text-primary-foreground/80 text-sm mt-1">
+                      {user ? 'View in Shop' : 'Sign up to shop'}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Workshop CTA */}
       <section className="py-20 md:py-32 bg-primary text-primary-foreground">

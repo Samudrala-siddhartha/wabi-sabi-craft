@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Minus, Plus, ShoppingBag, ArrowLeft, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { Product } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -33,7 +32,7 @@ const ProductDetail: React.FC = () => {
       if (error) throw error;
       if (!data) throw new Error('Product not found');
       
-      return data as Product;
+      return data;
     },
     enabled: !!id,
   });
@@ -60,7 +59,7 @@ const ProductDetail: React.FC = () => {
   };
 
   const handleAddToCart = () => {
-    if (!product || !product.in_stock) return;
+    if (!product || !product.in_stock || product.status === 'coming_soon') return;
     
     for (let i = 0; i < quantity; i++) {
       addItem({
@@ -75,7 +74,7 @@ const ProductDetail: React.FC = () => {
   };
 
   const handleBuyNow = () => {
-    if (!product || !product.in_stock) return;
+    if (!product || !product.in_stock || product.status === 'coming_soon') return;
     handleAddToCart();
     navigate('/cart');
   };
@@ -102,7 +101,8 @@ const ProductDetail: React.FC = () => {
     return null;
   }
 
-  const isAvailable = product.in_stock;
+  const isComingSoon = product.status === 'coming_soon';
+  const isAvailable = product.in_stock && !isComingSoon;
 
   return (
     <Layout>
@@ -134,7 +134,12 @@ const ProductDetail: React.FC = () => {
                   </span>
                 </div>
               )}
-              {!isAvailable && (
+              {isComingSoon && (
+                <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">
+                  Coming Soon
+                </Badge>
+              )}
+              {!product.in_stock && !isComingSoon && (
                 <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
                   <Badge variant="secondary" className="text-base px-4 py-2">
                     Currently Unavailable
@@ -180,7 +185,14 @@ const ProductDetail: React.FC = () => {
               {formatPrice(product.price)}
             </p>
 
-            {!isAvailable && (
+            {isComingSoon && (
+              <div className="mt-4 flex items-center gap-2 text-primary bg-primary/10 p-3 rounded-lg">
+                <AlertCircle className="h-5 w-5" />
+                <span className="font-body">This product is coming soon!</span>
+              </div>
+            )}
+
+            {!product.in_stock && !isComingSoon && (
               <div className="mt-4 flex items-center gap-2 text-muted-foreground bg-muted p-3 rounded-lg">
                 <AlertCircle className="h-5 w-5" />
                 <span className="font-body">This item is currently unavailable</span>
@@ -265,10 +277,12 @@ const ProductDetail: React.FC = () => {
               ) : (
                 <div className="space-y-4">
                   <Button size="lg" className="w-full font-body" disabled>
-                    Currently Unavailable
+                    {isComingSoon ? 'Coming Soon' : 'Currently Unavailable'}
                   </Button>
                   <p className="font-body text-sm text-muted-foreground text-center">
-                    This item will be available soon. Check back later.
+                    {isComingSoon 
+                      ? 'This product will be available soon. Stay tuned!'
+                      : 'This item will be available soon. Check back later.'}
                   </p>
                 </div>
               )}

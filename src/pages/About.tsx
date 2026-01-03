@@ -27,12 +27,15 @@ const studioAddress = {
   state: 'Gujarat, India',
   phone: '+91 9879575601',
   hours: 'By appointment only',
-  mapUrl: 'https://www.google.com/maps/search/?api=1&query=311+Silent+Zone+Gavier+Dumas+Road+Surat+395007',
-  embedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.1234567890123!2d72.7654321!3d21.1234567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjHCsDA3JzMwLjQiTiA3MsKwNDUnNTUuNiJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin',
+  mapUrl: 'https://maps.google.com/?q=311+Silent+Zone+Gavier+Dumas+Road+Surat+395007',
 };
 
 const About: React.FC = () => {
   useSEO(SEO_CONFIGS.about);
+  
+  const handleOpenMaps = () => {
+    window.open(studioAddress.mapUrl, '_blank', 'noopener,noreferrer');
+  };
   
   return (
   <Layout>
@@ -159,7 +162,7 @@ const About: React.FC = () => {
           {/* Map */}
           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.5!2d72.765!3d21.123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sDumas%20Road%2C%20Surat!5e0!3m2!1sen!2sin!4v1234567890!5m2!1sen!2sin"
+              src="https://maps.google.com/maps?q=311+Silent+Zone+Gavier+Dumas+Road+Surat+395007&t=&z=15&ie=UTF8&iwloc=&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -215,6 +218,14 @@ const About: React.FC = () => {
                   </p>
                 </div>
               </div>
+
+              <Button 
+                onClick={handleOpenMaps}
+                className="mt-4"
+              >
+                <Navigation className="h-4 w-4 mr-2" />
+                Open in Maps
+              </Button>
             </div>
           </div>
         </div>
