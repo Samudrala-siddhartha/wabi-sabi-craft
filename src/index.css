@@ -247,49 +247,21 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
 }
+/* Touch device optimizations - kept for desktop view on mobile */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
-/* Mobile-first optimizations for Android & iOS */
-@media (max-width: 767px) {
-  /* Ensure minimum touch target sizes for accessibility */
-  button, 
-  a, 
-  [role="button"],
-  input[type="checkbox"],
-  input[type="radio"] {
-    min-height: 44px;
-    min-width: 44px;
-  }
+* {
+  -webkit-tap-highlight-color: hsl(var(--primary) / 0.1);
+}
 
-  /* Prevent text size adjustment on orientation change */
-  html {
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-  }
-
-  /* Improve tap highlight on mobile */
-  * {
-    -webkit-tap-highlight-color: hsl(var(--primary) / 0.1);
-  }
-
-  /* Smooth momentum scrolling for iOS */
-  .overflow-auto,
-  .overflow-scroll,
-  .overflow-x-auto,
-  .overflow-y-auto {
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Prevent horizontal overflow */
-  body {
-    overflow-x: hidden;
-  }
-
-  /* Better mobile input styling */
-  input,
-  textarea,
-  select {
-    font-size: 16px; /* Prevents iOS zoom on focus */
-  }
+.overflow-auto,
+.overflow-scroll,
+.overflow-x-auto,
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Improve touch interactions */
