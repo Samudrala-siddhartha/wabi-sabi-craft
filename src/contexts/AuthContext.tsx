@@ -10,10 +10,8 @@ interface AuthContextType {
   isLoading: boolean;
   isAdmin: boolean;
   isProducer: boolean;
-  needsRoleSelection: boolean;
   signUp: (email: string, password: string, role: AppRole, firstName?: string, lastName?: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signInWithGoogle: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   refreshRole: () => Promise<void>;
 }
@@ -27,7 +25,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [needsRoleSelection, setNeedsRoleSelection] = useState(false);
 
   const fetchUserRole = useCallback(async (userId: string, userEmail?: string | null): Promise<AppRole | null> => {
     try {
@@ -64,7 +61,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (user) {
       const fetchedRole = await fetchUserRole(user.id, user.email);
       setRole(fetchedRole);
-      setNeedsRoleSelection(!fetchedRole);
     }
   }, [user, fetchUserRole]);
 
@@ -80,12 +76,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setTimeout(() => {
             fetchUserRole(session.user.id, session.user.email).then((fetchedRole) => {
               setRole(fetchedRole);
-              setNeedsRoleSelection(!fetchedRole);
             });
           }, 0);
         } else {
           setRole(null);
-          setNeedsRoleSelection(false);
         }
 
         if (event === 'INITIAL_SESSION') {
@@ -102,7 +96,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (session?.user) {
         fetchUserRole(session.user.id, session.user.email).then((fetchedRole) => {
           setRole(fetchedRole);
-          setNeedsRoleSelection(!fetchedRole);
           setIsLoading(false);
         });
       } else {
@@ -147,25 +140,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { error: error as Error | null };
   };
 
-  const signInWithGoogle = async () => {
-    const redirectUrl = `${window.location.origin}/role-selection`;
-    
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: redirectUrl,
-      },
-    });
-
-    return { error: error as Error | null };
-  };
-
   const signOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
     setRole(null);
-    setNeedsRoleSelection(false);
   };
 
   const value: AuthContextType = {
@@ -175,10 +154,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isLoading,
     isAdmin: role === 'admin',
     isProducer: role === 'producer',
-    needsRoleSelection,
     signUp,
     signIn,
-    signInWithGoogle,
     signOut,
     refreshRole,
   };

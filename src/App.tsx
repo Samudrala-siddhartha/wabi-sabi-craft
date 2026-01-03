@@ -15,7 +15,6 @@ import Workshops from "./pages/Workshops";
 import WorkshopDetail from "./pages/WorkshopDetail";
 import Sessions from "./pages/Sessions";
 import Auth from "./pages/Auth";
-import RoleSelection from "./pages/RoleSelection";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Activity from "./pages/Activity";
@@ -61,7 +60,6 @@ const App = () => (
                 <Route path="/sessions" element={<Sessions />} />
                 <Route path="/login" element={<Auth />} />
                 <Route path="/signup" element={<Auth />} />
-                <Route path="/role-selection" element={<RoleSelection />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/activity" element={<Activity />} />
