@@ -27,6 +27,7 @@ export interface Product {
   care_instructions: string | null;
   category: string | null;
   in_stock: boolean;
+  status: 'active' | 'coming_soon';
   created_at: string;
   updated_at: string;
 }

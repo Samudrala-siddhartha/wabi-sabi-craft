@@ -65,6 +65,7 @@ export type Database = {
           materials: string | null
           name: string
           price: number
+          status: string
           updated_at: string
         }
         Insert: {
@@ -78,6 +79,7 @@ export type Database = {
           materials?: string | null
           name: string
           price?: number
+          status?: string
           updated_at?: string
         }
         Update: {
@@ -91,6 +93,7 @@ export type Database = {
           materials?: string | null
           name?: string
           price?: number
+          status?: string
           updated_at?: string
         }
         Relationships: []
