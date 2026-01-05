@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -214,11 +215,11 @@ const Checkout: React.FC = () => {
         .from('orders')
         .insert([{
           user_id: user.id,
-          items: JSON.parse(JSON.stringify(items)),
+          items: JSON.parse(JSON.stringify(items)) as Json,
           subtotal: subtotal,
           total: subtotal,
           status: 'pending',
-          shipping_address: JSON.parse(JSON.stringify(data)),
+          shipping_address: JSON.parse(JSON.stringify(data)) as Json,
         }])
         .select()
         .single();
