@@ -1,7 +1,6 @@
 import React from 'react';
 import Layout from '@/components/layout/Layout';
-import { MapPin, Phone, Clock, Navigation } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { MapPin, Phone, Clock } from 'lucide-react';
 import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 import founderImage from '@/assets/founder-shivangi.png';
 import galleryTeacup from '@/assets/gallery-teacup.jpg';
@@ -27,15 +26,10 @@ const studioAddress = {
   state: 'Gujarat, India',
   phone: '+91 9879575601',
   hours: 'By appointment only',
-  mapUrl: 'https://maps.google.com/?q=311+Silent+Zone+Gavier+Dumas+Road+Surat+395007',
 };
 
 const About: React.FC = () => {
   useSEO(SEO_CONFIGS.about);
-  
-  const handleOpenMaps = () => {
-    window.open(studioAddress.mapUrl, '_blank', 'noopener,noreferrer');
-  };
   
   return (
   <Layout>
@@ -162,7 +156,7 @@ const About: React.FC = () => {
           {/* Map */}
           <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted">
             <iframe
-              src="https://maps.google.com/maps?q=311+Silent+Zone+Gavier+Dumas+Road+Surat+395007&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.5!2d72.7274!3d21.1084!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjHCsDA2JzMwLjIiTiA3MsKwNDMnMzguNiJF!5e0!3m2!1sen!2sin!4v1"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -219,13 +213,6 @@ const About: React.FC = () => {
                 </div>
               </div>
 
-              <Button 
-                onClick={handleOpenMaps}
-                className="mt-4"
-              >
-                <Navigation className="h-4 w-4 mr-2" />
-                Open in Maps
-              </Button>
             </div>
           </div>
         </div>
