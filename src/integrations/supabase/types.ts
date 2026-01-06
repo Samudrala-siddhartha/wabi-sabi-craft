@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      custom_requests: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          product_id: string
+          status: string
+          text_notes: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          product_id: string
+          status?: string
+          text_notes?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          product_id?: string
+          status?: string
+          text_notes?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_requests_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string
