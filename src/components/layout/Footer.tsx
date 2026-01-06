@@ -93,7 +93,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <a 
-                  href="https://instagram.com/bashobyyshivangi" 
+                  href="https://www.instagram.com/bashobyyshivangi/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-primary transition-colors font-body text-sm flex items-center gap-2"
