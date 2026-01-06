@@ -127,7 +127,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   );
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen bg-muted/30 overflow-x-hidden">
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
@@ -155,7 +155,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {/* Mobile Drawer */}
       <aside 
         className={cn(
-          'lg:hidden fixed top-0 left-0 z-50 h-full w-64 bg-card border-r border-border flex flex-col transform transition-transform duration-300 ease-in-out',
+          'lg:hidden fixed top-0 left-0 z-50 h-full w-64 max-w-[80vw] bg-card border-r border-border flex flex-col transform transition-transform duration-300 ease-in-out overflow-y-auto',
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -163,15 +163,15 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </aside>
 
       {/* Desktop Sidebar - Hidden on mobile */}
-      <aside className="hidden lg:flex fixed top-0 left-0 h-screen w-64 bg-card border-r border-border flex-col">
+      <aside className="hidden lg:flex fixed top-0 left-0 h-screen w-64 bg-card border-r border-border flex-col overflow-y-auto">
         <SidebarContent />
       </aside>
 
       {/* Main Content */}
-      <main className="lg:ml-64 min-h-screen">
+      <main className="lg:ml-64 min-h-screen w-full overflow-x-hidden">
         {/* Mobile spacer for fixed header */}
         <div className="lg:hidden h-14" />
-        <div className="p-4 lg:p-8">
+        <div className="p-4 lg:p-8 max-w-full overflow-x-auto">
           {children}
         </div>
       </main>

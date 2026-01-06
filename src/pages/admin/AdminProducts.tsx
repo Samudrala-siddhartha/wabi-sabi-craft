@@ -229,7 +229,8 @@ const AdminProducts: React.FC = () => {
           .from('product-images')
           .getPublicUrl(filePath);
 
-        uploadedUrls.push(publicUrl);
+        // Add cache-busting query param to ensure fresh image loads
+        uploadedUrls.push(`${publicUrl}?v=${Date.now()}`);
       }
 
       // Update form data with new images
@@ -288,7 +289,7 @@ const AdminProducts: React.FC = () => {
                           <div className="flex items-center gap-3">
                             {product.images && product.images[0] ? (
                               <img
-                                src={product.images[0]}
+                                src={product.images[0].includes('?') ? product.images[0] : `${product.images[0]}?v=${product.updated_at}`}
                                 alt={product.name}
                                 className="h-12 w-12 rounded object-cover flex-shrink-0"
                               />
@@ -470,9 +471,9 @@ const AdminProducts: React.FC = () => {
                   {formData.images.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
                       {formData.images.map((url, index) => (
-                        <div key={index} className="relative group">
+                        <div key={`${url}-${index}`} className="relative group">
                           <img
-                            src={url}
+                            src={url.includes('?') ? url : `${url}?v=${Date.now()}`}
                             alt={`Product ${index + 1}`}
                             className="h-20 w-20 object-cover rounded"
                           />
