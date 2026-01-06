@@ -78,8 +78,8 @@ const CookiePolicy: React.FC = () => (
           </p>
           <p className="mt-4">
             <strong>Basho by Shivangi</strong><br />
-            Phone: +91 9879575601<br />
-            Instagram: @bashobyyshivangi
+            Phone: <a href="tel:+919879575601" className="text-primary hover:underline">+91 9879575601</a><br />
+            Instagram: <a href="https://www.instagram.com/bashobyyshivangi/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@bashobyyshivangi</a>
           </p>
         </section>
       </div>

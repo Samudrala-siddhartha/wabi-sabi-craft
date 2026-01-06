@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { useSEO } from '@/hooks/useSEO';
 import { toast } from 'sonner';
+import CustomizationForm from '@/components/product/CustomizationForm';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -287,6 +288,9 @@ const ProductDetail: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Customization Section */}
+            <CustomizationForm productId={product.id} productName={product.name} />
           </div>
         </div>
       </div>
