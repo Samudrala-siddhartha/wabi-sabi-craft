@@ -14,6 +14,7 @@ import Checkout from "./pages/Checkout";
 import Workshops from "./pages/Workshops";
 import WorkshopDetail from "./pages/WorkshopDetail";
 import Sessions from "./pages/Sessions";
+import Custom from "./pages/Custom";
 import Auth from "./pages/Auth";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -58,6 +59,7 @@ const App = () => (
                 <Route path="/workshops" element={<Workshops />} />
                 <Route path="/workshops/:id" element={<WorkshopDetail />} />
                 <Route path="/sessions" element={<Sessions />} />
+                <Route path="/custom" element={<Custom />} />
                 <Route path="/login" element={<Auth />} />
                 <Route path="/signup" element={<Auth />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
