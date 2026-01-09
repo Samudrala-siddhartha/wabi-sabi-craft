@@ -67,26 +67,28 @@ const Home: React.FC = () => {
     <Layout>
       {/* Hero Section */}
       <section className="relative min-h-[70vh] md:min-h-[90vh] flex items-center overflow-hidden">
-        {/* Mobile Hero Image - shown first on mobile */}
+        {/* Mobile Hero - Same image as desktop, mobile-optimized */}
         <div className="md:hidden w-full">
-          <div className="aspect-[4/5] w-full">
+          <div className="relative aspect-[3/4] w-full max-h-[60vh] overflow-hidden">
             <img 
-              src={galleryBowls} 
-              alt="Handcrafted ceramic bowls" 
-              className="w-full h-full object-cover"
+              src={heroImage} 
+              alt="Shivangi with handcrafted pottery" 
+              className="w-full h-full object-cover object-top"
             />
+            {/* Subtle bottom fade */}
+            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent" />
           </div>
-          <div className="px-4 py-8 bg-background">
-            <span className="inline-block font-body text-xs tracking-[0.2em] text-muted-foreground uppercase mb-3">
+          <div className="px-4 py-6 bg-background text-center">
+            <span className="inline-block font-body text-xs tracking-[0.2em] text-muted-foreground uppercase mb-2">
               Handcrafted Pottery
             </span>
-            <h1 className="font-display text-4xl font-light text-foreground mb-4 leading-[1.1]">
+            <h1 className="font-display text-3xl font-light text-foreground mb-3 leading-[1.1]">
               Beauty in
               <br />
               <span className="font-semibold italic text-primary">Imperfection</span>
             </h1>
-            <p className="font-body text-base text-muted-foreground mb-6 leading-relaxed">
-              Embrace the Japanese philosophy of Wabi-Sabi with our handcrafted pottery collection.
+            <p className="font-body text-sm text-muted-foreground mb-5 leading-relaxed max-w-xs mx-auto">
+              Embrace the Japanese philosophy of Wabi-Sabi with our handcrafted pottery.
             </p>
             
             <div className="flex flex-col gap-3">
