@@ -9,6 +9,7 @@ import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-shivangi.png';
+import heroMobileImage from '@/assets/hero-mobile.png';
 import founderImage from '@/assets/founder-shivangi.png';
 import galleryBowls from '@/assets/gallery-bowls.jpg';
 
@@ -72,7 +73,7 @@ const Home: React.FC = () => {
           {/* Full-screen hero image */}
           <div className="absolute inset-0">
             <img 
-              src={heroImage} 
+              src={heroMobileImage} 
               alt="Shivangi with handcrafted pottery" 
               className="w-full h-full object-cover object-center"
             />
