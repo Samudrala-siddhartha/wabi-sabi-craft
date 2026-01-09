@@ -68,37 +68,40 @@ const Home: React.FC = () => {
       {/* Hero Section */}
       <section className="relative min-h-[70vh] md:min-h-[90vh] flex items-center overflow-hidden">
         {/* Mobile Hero - Same image as desktop, mobile-optimized */}
-        <div className="md:hidden w-full">
-          <div className="relative w-full min-h-[50vh] bg-[#f5f0eb] overflow-hidden">
+        <div className="md:hidden w-full relative min-h-[85vh]">
+          {/* Full-screen hero image */}
+          <div className="absolute inset-0">
             <img 
               src={heroImage} 
               alt="Shivangi with handcrafted pottery" 
-              className="w-full h-auto object-contain"
+              className="w-full h-full object-cover object-center"
             />
-            {/* Subtle bottom fade */}
-            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent" />
+            {/* Dark gradient overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
           </div>
-          <div className="px-4 py-6 bg-background text-center">
-            <span className="inline-block font-body text-xs tracking-[0.2em] text-muted-foreground uppercase mb-2">
+          
+          {/* Text overlay positioned at bottom */}
+          <div className="absolute inset-x-0 bottom-0 px-5 pb-8 pt-16 text-center">
+            <span className="inline-block font-body text-xs tracking-[0.2em] text-white/80 uppercase mb-2">
               Handcrafted Pottery
             </span>
-            <h1 className="font-display text-3xl font-light text-foreground mb-3 leading-[1.1]">
+            <h1 className="font-display text-4xl font-light text-white mb-3 leading-[1.1]">
               Beauty in
               <br />
-              <span className="font-semibold italic text-primary">Imperfection</span>
+              <span className="font-semibold italic">Imperfection</span>
             </h1>
-            <p className="font-body text-sm text-muted-foreground mb-5 leading-relaxed max-w-xs mx-auto">
+            <p className="font-body text-sm text-white/80 mb-6 leading-relaxed max-w-xs mx-auto">
               Embrace the Japanese philosophy of Wabi-Sabi with our handcrafted pottery.
             </p>
             
             <div className="flex flex-col gap-3">
-              <Button asChild size="lg" className="font-body text-base w-full">
+              <Button asChild size="lg" className="font-body text-base w-full bg-white text-foreground hover:bg-white/90">
                 <Link to="/shop">
                   Shop Collection
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="font-body text-base w-full">
+              <Button asChild variant="outline" size="lg" className="font-body text-base w-full border-white text-white hover:bg-white/10">
                 <Link to="/workshops">
                   Explore Workshops
                 </Link>
