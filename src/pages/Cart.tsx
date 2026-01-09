@@ -4,8 +4,10 @@ import { Minus, Plus, Trash2, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 const Cart: React.FC = () => {
+  useSEO(SEO_CONFIGS.cart);
   const { items, updateQuantity, removeItem, subtotal } = useCart();
   const navigate = useNavigate();
 

@@ -3,9 +3,11 @@ import { useEffect } from "react";
 import { Home, ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
+import { useSEO, SEO_CONFIGS } from "@/hooks/useSEO";
 
 const NotFound = () => {
   const location = useLocation();
+  useSEO(SEO_CONFIGS.notFound);
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);

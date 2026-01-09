@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { useSEO, SEO_CONFIGS } from "@/hooks/useSEO";
 
 // Import inspiration images
 import galleryBowls from "@/assets/gallery-bowls.jpg";
@@ -36,6 +37,7 @@ const inspirationImages = [
 ];
 
 const Custom = () => {
+  useSEO(SEO_CONFIGS.custom);
   const { user } = useAuth();
   const { toast } = useToast();
   

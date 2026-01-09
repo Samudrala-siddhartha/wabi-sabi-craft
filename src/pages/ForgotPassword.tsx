@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, ArrowLeft, Mail } from 'lucide-react';
 import bashoLogo from '@/assets/basho-logo-new.jpg';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 const forgotPasswordSchema = z.object({
   email: z.string().trim().email('Please enter a valid email').max(255),
@@ -19,6 +20,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPassword: React.FC = () => {
+  useSEO(SEO_CONFIGS.forgotPassword);
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 

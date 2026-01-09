@@ -42,6 +42,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 interface ProductFormData {
   name: string;
@@ -68,6 +69,7 @@ const defaultFormData: ProductFormData = {
 };
 
 const AdminProducts: React.FC = () => {
+  useSEO(SEO_CONFIGS.adminProducts);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [deleteProduct, setDeleteProduct] = useState<any | null>(null);

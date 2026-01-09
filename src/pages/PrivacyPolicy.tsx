@@ -1,10 +1,14 @@
 import React from 'react';
 import Layout from '@/components/layout/Layout';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
-const PrivacyPolicy: React.FC = () => (
-  <Layout>
-    <div className="container-narrow py-16 md:py-24">
-      <h1 className="font-display text-4xl md:text-5xl font-light text-foreground mb-8">Privacy Policy</h1>
+const PrivacyPolicy: React.FC = () => {
+  useSEO(SEO_CONFIGS.privacyPolicy);
+  
+  return (
+    <Layout>
+      <div className="container-narrow py-16 md:py-24">
+        <h1 className="font-display text-4xl md:text-5xl font-light text-foreground mb-8">Privacy Policy</h1>
       <div className="prose prose-lg max-w-none font-body text-muted-foreground space-y-8">
         <p className="text-sm">Last updated: December 2024</p>
         
@@ -84,8 +88,9 @@ const PrivacyPolicy: React.FC = () => (
           </p>
         </section>
       </div>
-    </div>
-  </Layout>
-);
+      </div>
+    </Layout>
+  );
+};
 
 export default PrivacyPolicy;

@@ -6,8 +6,10 @@ import { supabase } from '@/integrations/supabase/client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 const AdminDashboard: React.FC = () => {
+  useSEO(SEO_CONFIGS.adminDashboard);
   // Fetch counts
   const { data: stats } = useQuery({
     queryKey: ['admin-stats'],
