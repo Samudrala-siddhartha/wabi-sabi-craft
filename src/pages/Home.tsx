@@ -69,11 +69,11 @@ const Home: React.FC = () => {
       <section className="relative min-h-[70vh] md:min-h-[90vh] flex items-center overflow-hidden">
         {/* Mobile Hero - Same image as desktop, mobile-optimized */}
         <div className="md:hidden w-full">
-          <div className="relative aspect-[3/4] w-full max-h-[60vh] overflow-hidden">
+          <div className="relative w-full min-h-[50vh] bg-[#f5f0eb] overflow-hidden">
             <img 
               src={heroImage} 
               alt="Shivangi with handcrafted pottery" 
-              className="w-full h-full object-cover object-top"
+              className="w-full h-auto object-contain"
             />
             {/* Subtle bottom fade */}
             <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent" />
