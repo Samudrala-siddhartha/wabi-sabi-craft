@@ -32,12 +32,14 @@ import {
 import { toast } from 'sonner';
 import { Tables } from '@/integrations/supabase/types';
 import { format } from 'date-fns';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 type Inquiry = Tables<'session_inquiries'>;
 
 const statusOptions = ['pending', 'contacted', 'scheduled', 'completed', 'cancelled'];
 
 const AdminInquiries: React.FC = () => {
+  useSEO(SEO_CONFIGS.adminInquiries);
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
   const queryClient = useQueryClient();

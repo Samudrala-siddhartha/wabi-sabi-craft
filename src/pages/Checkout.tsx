@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, ShoppingBag, ArrowRight, CreditCard, CheckCircle, Shield } from 'lucide-react';
 import bashoLogo from '@/assets/basho-logo-new.jpg';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 declare global {
   interface Window {
@@ -67,6 +68,7 @@ const addressSchema = z.object({
 type AddressForm = z.infer<typeof addressSchema>;
 
 const Checkout: React.FC = () => {
+  useSEO(SEO_CONFIGS.checkout);
   const navigate = useNavigate();
   const { items, subtotal, clearCart } = useCart();
   const { user } = useAuth();

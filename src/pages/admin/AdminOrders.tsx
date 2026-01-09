@@ -29,6 +29,7 @@ import {
 import { toast } from 'sonner';
 import { Tables } from '@/integrations/supabase/types';
 import { format } from 'date-fns';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 type Order = Tables<'orders'>;
 
@@ -54,6 +55,7 @@ interface ShippingAddress {
 const statusOptions = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
 
 const AdminOrders: React.FC = () => {
+  useSEO(SEO_CONFIGS.adminOrders);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const queryClient = useQueryClient();
 

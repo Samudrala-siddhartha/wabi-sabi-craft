@@ -10,12 +10,18 @@ interface SEOProps {
 
 const DEFAULT_IMAGE = '/og-image.jpg';
 const SITE_NAME = 'Basho by Shivangi';
+const DEFAULT_TAGLINE = 'Handcrafted Pottery & Studio Experiences';
 const BASE_URL = typeof window !== 'undefined' ? window.location.origin : '';
 
 export const useSEO = ({ title, description, image, url, type = 'website' }: SEOProps) => {
   useEffect(() => {
     // Update document title
-    document.title = `${title} | ${SITE_NAME}`;
+    // For home page, show full branding with tagline
+    // For other pages, show "{Page} | Basho by Shivangi"
+    const isHomePage = title.toLowerCase() === 'home' || title === '';
+    document.title = isHomePage 
+      ? `${SITE_NAME} | ${DEFAULT_TAGLINE}`
+      : `${title} | ${SITE_NAME}`;
 
     // Helper to update or create meta tag
     const updateMeta = (property: string, content: string, isProperty = false) => {
@@ -35,7 +41,10 @@ export const useSEO = ({ title, description, image, url, type = 'website' }: SEO
     updateMeta('description', description);
 
     // Open Graph tags
-    updateMeta('og:title', `${title} | ${SITE_NAME}`, true);
+    const ogTitle = isHomePage 
+      ? `${SITE_NAME} | ${DEFAULT_TAGLINE}`
+      : `${title} | ${SITE_NAME}`;
+    updateMeta('og:title', ogTitle, true);
     updateMeta('og:description', description, true);
     updateMeta('og:type', type, true);
     updateMeta('og:site_name', SITE_NAME, true);
@@ -46,13 +55,13 @@ export const useSEO = ({ title, description, image, url, type = 'website' }: SEO
 
     // Twitter Card tags
     updateMeta('twitter:card', 'summary_large_image');
-    updateMeta('twitter:title', `${title} | ${SITE_NAME}`);
+    updateMeta('twitter:title', ogTitle);
     updateMeta('twitter:description', description);
     updateMeta('twitter:image', image || `${BASE_URL}${DEFAULT_IMAGE}`);
 
     // Cleanup function to reset title on unmount
     return () => {
-      document.title = SITE_NAME;
+      document.title = `${SITE_NAME} | ${DEFAULT_TAGLINE}`;
     };
   }, [title, description, image, url, type]);
 };
@@ -60,36 +69,89 @@ export const useSEO = ({ title, description, image, url, type = 'website' }: SEO
 // Pre-defined SEO configs for common pages
 export const SEO_CONFIGS = {
   home: {
-    title: 'Handcrafted Pottery',
+    title: 'Home',
     description: 'Discover handcrafted pottery celebrating the Japanese philosophy of Wabi-Sabi. Each piece tells a story of intention, patience, and natural beauty.',
   },
   shop: {
-    title: 'Shop Collection',
+    title: 'Shop',
     description: 'Browse our collection of handcrafted pottery. Each piece is unique, embracing the natural variations that make pottery an art form.',
   },
   workshops: {
-    title: 'Pottery Workshops',
+    title: 'Workshops',
     description: 'Join our intimate pottery workshops and learn traditional techniques while creating your own unique pieces.',
   },
   sessions: {
-    title: 'Private Sessions',
+    title: 'Sessions',
     description: 'Book a private pottery session for a personalized hands-on experience. Perfect for individuals, couples, or small groups.',
   },
   about: {
-    title: 'About Basho',
+    title: 'About',
     description: 'Learn about Basho by Shivangi and our philosophy of finding beauty in imperfection through handcrafted pottery.',
   },
   cart: {
-    title: 'Your Cart',
+    title: 'Cart',
     description: 'Review the items in your cart and proceed to checkout.',
   },
+  checkout: {
+    title: 'Checkout',
+    description: 'Complete your purchase of handcrafted pottery from Basho by Shivangi.',
+  },
   activity: {
-    title: 'My Activity',
+    title: 'Activity',
     description: 'View your orders, workshop bookings, and session inquiries.',
   },
   auth: {
     title: 'Sign In',
     description: 'Sign in to your account to track orders, book workshops, and more.',
+  },
+  custom: {
+    title: 'Custom Orders',
+    description: 'Request a custom handcrafted pottery piece tailored to your vision.',
+  },
+  privacyPolicy: {
+    title: 'Privacy Policy',
+    description: 'Learn how Basho by Shivangi collects, uses, and protects your personal information.',
+  },
+  cookiePolicy: {
+    title: 'Cookie Policy',
+    description: 'Understand how Basho by Shivangi uses cookies on our website.',
+  },
+  terms: {
+    title: 'Terms of Service',
+    description: 'Read the terms and conditions for using the Basho by Shivangi website and services.',
+  },
+  forgotPassword: {
+    title: 'Forgot Password',
+    description: 'Reset your password for your Basho by Shivangi account.',
+  },
+  resetPassword: {
+    title: 'Reset Password',
+    description: 'Create a new password for your Basho by Shivangi account.',
+  },
+  notFound: {
+    title: 'Page Not Found',
+    description: 'The page you are looking for does not exist.',
+  },
+  // Admin pages
+  adminDashboard: {
+    title: 'Admin Dashboard',
+    description: 'Manage your Basho by Shivangi store.',
+  },
+  adminProducts: {
+    title: 'Admin Products',
+    description: 'Manage products in your Basho by Shivangi store.',
+  },
+  adminOrders: {
+    title: 'Admin Orders',
+    description: 'View and manage customer orders.',
+  },
+  adminWorkshops: {
+    title: 'Admin Workshops',
+    description: 'Manage pottery workshops and sessions.',
+  },
+  adminInquiries: {
+    title: 'Admin Inquiries',
+    description: 'View and respond to customer inquiries.',
   },
 };
 

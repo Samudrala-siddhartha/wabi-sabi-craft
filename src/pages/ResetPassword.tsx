@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, CheckCircle } from 'lucide-react';
 import bashoLogo from '@/assets/basho-logo-new.jpg';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 const resetPasswordSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters').max(100),
@@ -23,6 +24,7 @@ const resetPasswordSchema = z.object({
 type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
 
 const ResetPassword: React.FC = () => {
+  useSEO(SEO_CONFIGS.resetPassword);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);

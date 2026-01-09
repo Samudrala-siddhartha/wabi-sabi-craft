@@ -13,6 +13,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import bashoLogo from '@/assets/basho-logo-new.jpg';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 const loginSchema = z.object({
   email: z.string().trim().email('Please enter a valid email').max(255),
@@ -29,6 +30,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 type SignupForm = z.infer<typeof signupSchema>;
 
 const Auth: React.FC = () => {
+  useSEO(SEO_CONFIGS.auth);
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn, signUp, user, role, isLoading: authLoading } = useAuth();

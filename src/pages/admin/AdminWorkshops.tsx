@@ -35,6 +35,7 @@ import {
 import { toast } from 'sonner';
 import { Tables } from '@/integrations/supabase/types';
 import { format } from 'date-fns';
+import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
 type Workshop = Tables<'workshops'>;
 
@@ -63,6 +64,7 @@ const defaultFormData: WorkshopFormData = {
 };
 
 const AdminWorkshops: React.FC = () => {
+  useSEO(SEO_CONFIGS.adminWorkshops);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingWorkshop, setEditingWorkshop] = useState<Workshop | null>(null);
   const [deleteWorkshop, setDeleteWorkshop] = useState<Workshop | null>(null);
