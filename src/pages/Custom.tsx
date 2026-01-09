@@ -11,6 +11,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 
+// Import inspiration images
+import galleryBowls from "@/assets/gallery-bowls.jpg";
+import galleryPlanter from "@/assets/gallery-planter.jpg";
+import galleryVase from "@/assets/gallery-vase.jpg";
+import galleryTeacup from "@/assets/gallery-teacup.jpg";
+
 const productTypes = [
   "Vase",
   "Bowl",
@@ -20,6 +26,13 @@ const productTypes = [
   "Tea Set",
   "Dinner Set",
   "Other"
+];
+
+const inspirationImages = [
+  { src: galleryBowls, caption: "Organic tableware" },
+  { src: galleryVase, caption: "Sculptural forms" },
+  { src: galleryPlanter, caption: "Custom gifting" },
+  { src: galleryTeacup, caption: "Experimental glazes" },
 ];
 
 const Custom = () => {
@@ -185,19 +198,44 @@ const Custom = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="text-center p-6">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                  <feature.icon className="h-8 w-8 text-primary" />
+              <div key={index} className="text-center p-4 md:p-6">
+                <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                  <feature.icon className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-serif text-foreground mb-2">
+                <h3 className="text-lg md:text-xl font-serif text-foreground mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-sm md:text-base text-muted-foreground">
                   {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Inspiration Section */}
+      <section className="py-12 md:py-16 bg-secondary/20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-xl md:text-2xl font-serif text-center text-foreground mb-8">
+            Inspired by past custom creations
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {inspirationImages.map((item, index) => (
+              <div key={index} className="space-y-2">
+                <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                  <img 
+                    src={item.src} 
+                    alt={item.caption}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-xs md:text-sm text-muted-foreground text-center">
+                  {item.caption}
                 </p>
               </div>
             ))}
