@@ -10,6 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-shivangi.png';
 import founderImage from '@/assets/founder-shivangi.png';
+import galleryBowls from '@/assets/gallery-bowls.jpg';
 
 const Home: React.FC = () => {
   useSEO(SEO_CONFIGS.home);
@@ -65,20 +66,61 @@ const Home: React.FC = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-transparent z-10" />
-        
-        {/* Hero Image */}
-        <div className="absolute inset-0">
-          <img 
-            src={heroImage} 
-            alt="Shivangi with handcrafted pottery" 
-            className="w-full h-full object-cover object-center"
-          />
+      <section className="relative min-h-[70vh] md:min-h-[90vh] flex items-center overflow-hidden">
+        {/* Mobile Hero Image - shown first on mobile */}
+        <div className="md:hidden w-full">
+          <div className="aspect-[4/5] w-full">
+            <img 
+              src={galleryBowls} 
+              alt="Handcrafted ceramic bowls" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="px-4 py-8 bg-background">
+            <span className="inline-block font-body text-xs tracking-[0.2em] text-muted-foreground uppercase mb-3">
+              Handcrafted Pottery
+            </span>
+            <h1 className="font-display text-4xl font-light text-foreground mb-4 leading-[1.1]">
+              Beauty in
+              <br />
+              <span className="font-semibold italic text-primary">Imperfection</span>
+            </h1>
+            <p className="font-body text-base text-muted-foreground mb-6 leading-relaxed">
+              Embrace the Japanese philosophy of Wabi-Sabi with our handcrafted pottery collection.
+            </p>
+            
+            <div className="flex flex-col gap-3">
+              <Button asChild size="lg" className="font-body text-base w-full">
+                <Link to="/shop">
+                  Shop Collection
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="font-body text-base w-full">
+                <Link to="/workshops">
+                  Explore Workshops
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Hero - hidden on mobile */}
+        <div className="hidden md:block absolute inset-0">
+          {/* Background Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-transparent z-10" />
+          
+          {/* Hero Image */}
+          <div className="absolute inset-0">
+            <img 
+              src={heroImage} 
+              alt="Shivangi with handcrafted pottery" 
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
         </div>
         
-        <div className="relative container-wide z-20 px-4">
+        <div className="hidden md:block relative container-wide z-20 px-4">
           <div className="max-w-2xl">
             <span className="inline-block font-body text-sm tracking-[0.3em] text-muted-foreground uppercase mb-6 animate-fade-in">
               Handcrafted Pottery
@@ -109,8 +151,8 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Decorative Elements */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-20">
+        {/* Decorative Elements - desktop only */}
+        <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-20">
           <div className="w-6 h-10 rounded-full border-2 border-foreground/30 flex justify-center pt-2">
             <div className="w-1 h-2 bg-foreground/30 rounded-full" />
           </div>
@@ -168,7 +210,7 @@ const Home: React.FC = () => {
       )}
 
       {/* Philosophy Section */}
-      <section className="py-20 md:py-32">
+      <section className="py-12 md:py-32">
         <div className="container-narrow">
           <div className="text-center mb-16">
             <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
