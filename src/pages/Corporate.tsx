@@ -72,7 +72,14 @@ const Corporate: React.FC = () => {
     try {
       const { error } = await supabase
         .from('corporate_inquiries')
-        .insert([data]);
+        .insert([{
+          company_name: data.company_name,
+          contact_person: data.contact_person,
+          email: data.email,
+          phone: data.phone,
+          inquiry_type: data.inquiry_type,
+          message: data.message,
+        }]);
 
       if (error) throw error;
 
