@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Menu, X, User, LogOut } from 'lucide-react';
+import { ShoppingBag, Menu, X, User, LogOut, ChevronDown } from 'lucide-react';
 import bashoLogo from '@/assets/basho-logo-new.jpg';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -24,11 +24,20 @@ const Header: React.FC = () => {
     navigate('/');
   };
 
-  const navLinks = [
+  const mainNavLinks = [
     { href: '/shop', label: 'Shop' },
     { href: '/workshops', label: 'Workshops' },
+    { href: '/experiences', label: 'Experiences' },
+    { href: '/corporate', label: 'Corporate' },
+  ];
+
+  const moreLinks = [
     { href: '/sessions', label: 'Private Sessions' },
-    { href: '/custom', label: 'Custom' },
+    { href: '/custom', label: 'Custom Orders' },
+    { href: '/studio', label: 'Visit Studio' },
+    { href: '/gallery', label: 'Gallery' },
+    { href: '/testimonials', label: 'Testimonials' },
+    { href: '/philosophy', label: 'Philosophy' },
     { href: '/about', label: 'About' },
   ];
 
@@ -46,8 +55,8 @@ const Header: React.FC = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+          <div className="hidden md:flex items-center gap-6">
+            {mainNavLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
@@ -56,6 +65,23 @@ const Header: React.FC = () => {
                 {link.label}
               </Link>
             ))}
+            
+            {/* More dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="font-body text-sm font-medium text-foreground/80 hover:text-primary transition-colors tracking-wide flex items-center gap-1">
+                  More
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-card">
+                {moreLinks.map((link) => (
+                  <DropdownMenuItem key={link.href} onClick={() => navigate(link.href)}>
+                    {link.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Actions */}
@@ -83,7 +109,7 @@ const Header: React.FC = () => {
                     <User className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-48 bg-card">
                   <DropdownMenuItem onClick={() => navigate('/activity')}>
                     My Activity
                   </DropdownMenuItem>
@@ -125,8 +151,8 @@ const Header: React.FC = () => {
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
-            <div className="flex flex-col gap-4">
-              {navLinks.map((link) => (
+            <div className="flex flex-col gap-3">
+              {[...mainNavLinks, ...moreLinks].map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}

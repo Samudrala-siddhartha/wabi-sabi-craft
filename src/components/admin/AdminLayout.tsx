@@ -9,7 +9,11 @@ import {
   ArrowLeft,
   LogOut,
   Menu,
-  X
+  X,
+  Quote,
+  Building2,
+  Sparkles,
+  Image
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -24,7 +28,11 @@ const navItems = [
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/workshops', label: 'Workshops', icon: Calendar },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingCart },
-  { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
+  { href: '/admin/inquiries', label: 'Session Inquiries', icon: MessageSquare },
+  { href: '/admin/testimonials', label: 'Testimonials', icon: Quote },
+  { href: '/admin/corporate', label: 'Corporate', icon: Building2 },
+  { href: '/admin/experiences', label: 'Experiences', icon: Sparkles },
+  { href: '/admin/gallery', label: 'Gallery', icon: Image },
 ];
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
@@ -76,7 +84,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 p-4 overflow-y-auto">
         <ul className="space-y-1">
           {navItems.map((item) => {
             const isActive = location.pathname === item.href;
@@ -92,8 +100,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   )}
                 >
-                  <item.icon className="h-5 w-5" />
-                  {item.label}
+                  <item.icon className="h-5 w-5 flex-shrink-0" />
+                  <span className="truncate">{item.label}</span>
                 </Link>
               </li>
             );
