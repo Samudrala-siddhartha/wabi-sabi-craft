@@ -84,27 +84,25 @@ const Home: React.FC = () => {
           {/* Text overlay positioned at bottom */}
           <div className="absolute inset-x-0 bottom-0 px-5 pb-8 pt-16 text-center">
             <span className="inline-block font-body text-xs tracking-[0.2em] text-white/80 uppercase mb-2">
-              Handcrafted Pottery
+              Clay, Culture & Quiet Craft
             </span>
             <h1 className="font-display text-4xl font-light text-white mb-3 leading-[1.1]">
-              Beauty in
-              <br />
-              <span className="font-semibold italic">Imperfection</span>
+              Basho
             </h1>
             <p className="font-body text-sm text-white/80 mb-6 leading-relaxed max-w-xs mx-auto">
-              Embrace the Japanese philosophy of Wabi-Sabi with our handcrafted pottery.
+              Handcrafted ceramics inspired by Japanese poetry, wabi-sabi philosophy, and the beauty of imperfection.
             </p>
             
             <div className="flex flex-col gap-3">
               <Button asChild size="lg" className="font-body text-base w-full bg-white text-foreground hover:bg-white/90">
-                <Link to="/shop">
-                  Shop Collection
+                <Link to="/studio">
+                  Explore the Studio
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="font-body text-base w-full bg-white/20 backdrop-blur-sm border-white/60 text-white hover:bg-white/30">
-                <Link to="/workshops">
-                  Explore Workshops
+                <Link to="/shop">
+                  View the Collection
                 </Link>
               </Button>
             </div>
@@ -129,28 +127,28 @@ const Home: React.FC = () => {
         <div className="hidden md:block relative container-wide z-20 px-4">
           <div className="max-w-2xl">
             <span className="inline-block font-body text-sm tracking-[0.3em] text-muted-foreground uppercase mb-6 animate-fade-in">
-              Handcrafted Pottery
+              Clay, Culture & Quiet Craft
             </span>
             <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-foreground mb-6 leading-[1.1] animate-fade-in">
-              Beauty in
-              <br />
-              <span className="font-semibold italic text-primary">Imperfection</span>
+              Basho
             </h1>
-            <p className="font-body text-lg md:text-xl text-muted-foreground max-w-xl mb-10 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              Embrace the Japanese philosophy of Wabi-Sabi with our handcrafted pottery collection. 
-              Each piece tells a story of intention, patience, and natural beauty.
+            <p className="font-body text-lg md:text-xl text-muted-foreground max-w-xl mb-6 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              Handcrafted ceramics inspired by Japanese poetry, wabi-sabi philosophy, and the beauty of imperfection.
+            </p>
+            <p className="font-body text-base text-muted-foreground/80 max-w-lg mb-10 leading-relaxed animate-fade-in" style={{ animationDelay: '0.15s' }}>
+              Basho is not a factory. It is a slow studio where earth, fire and human hands create objects meant to live with you.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <Button asChild size="lg" className="font-body text-base px-8 py-6">
-                <Link to="/shop">
-                  Shop Collection
+                <Link to="/studio">
+                  Explore the Studio
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="font-body text-base px-8 py-6 bg-background/80 backdrop-blur-sm">
-                <Link to="/workshops">
-                  Explore Workshops
+                <Link to="/shop">
+                  View the Collection
                 </Link>
               </Button>
             </div>
@@ -214,6 +212,41 @@ const Home: React.FC = () => {
           </div>
         </section>
       )}
+
+      {/* Inspired by Matsuo Bashō Section */}
+      <section className="py-20 md:py-32 bg-[hsl(30,20%,96%)] relative overflow-hidden">
+        {/* Subtle paper texture overlay */}
+        <div className="absolute inset-0 opacity-30" style={{ 
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
+        }} />
+        <div className="container-narrow relative z-10">
+          <div className="text-center mb-12">
+            <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
+              The Inspiration
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl font-light text-foreground mt-4">
+              Inspired by Matsuo Bashō
+            </h2>
+          </div>
+          
+          <div className="max-w-3xl mx-auto space-y-6 text-center">
+            <p className="font-body text-lg text-muted-foreground leading-relaxed">
+              <span className="font-semibold text-foreground">Matsuo Bashō</span> was a 17th-century Japanese poet who transformed haiku into a profound art form. His verses captured fleeting moments of beauty—a frog leaping into an old pond, autumn moonlight, the silence of cicadas.
+            </p>
+            <p className="font-body text-lg text-muted-foreground leading-relaxed">
+              At Basho, we draw from this legacy. Our pottery reflects the same principles: <span className="italic text-foreground">stillness in motion, beauty in imperfection, presence in everyday objects</span>. Each piece is a quiet meditation, meant to be held, used, and lived with.
+            </p>
+            <blockquote className="mt-8 p-6 bg-card/80 rounded-lg border border-border/50">
+              <p className="font-display text-xl md:text-2xl text-foreground italic">
+                "In the twilight rain, these brilliant-hued hibiscus — a lovely sunset."
+              </p>
+              <footer className="mt-3 font-body text-sm text-muted-foreground">
+                — Matsuo Bashō
+              </footer>
+            </blockquote>
+          </div>
+        </div>
+      </section>
 
       {/* Philosophy Section */}
       <section className="py-12 md:py-32">

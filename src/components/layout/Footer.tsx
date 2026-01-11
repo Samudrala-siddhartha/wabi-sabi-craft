@@ -59,18 +59,83 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <Link 
-                  to="/sessions" 
+                  to="/experiences" 
                   className="text-muted-foreground hover:text-primary transition-colors font-body text-sm"
                 >
-                  Private Sessions
+                  Experiences
                 </Link>
               </li>
+              <li>
+                <Link 
+                  to="/custom" 
+                  className="text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+                >
+                  Custom Orders
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* About & Studio */}
+          <div>
+            <h4 className="font-display text-lg font-semibold text-foreground mb-4">
+              About
+            </h4>
+            <ul className="space-y-3">
               <li>
                 <Link 
                   to="/about" 
                   className="text-muted-foreground hover:text-primary transition-colors font-body text-sm"
                 >
-                  About
+                  Our Story
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/philosophy" 
+                  className="text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+                >
+                  Philosophy
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/studio" 
+                  className="text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+                >
+                  Visit Studio
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/care" 
+                  className="text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+                >
+                  Care & Artisanship
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/gallery" 
+                  className="text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+                >
+                  Gallery
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/exhibitions" 
+                  className="text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+                >
+                  Exhibitions
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/corporate" 
+                  className="text-muted-foreground hover:text-primary transition-colors font-body text-sm"
+                >
+                  Corporate
                 </Link>
               </li>
             </ul>
