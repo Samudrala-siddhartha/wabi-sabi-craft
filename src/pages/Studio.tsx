@@ -2,7 +2,7 @@ import React from 'react';
 import { MapPin, Clock, Phone, Mail, Calendar } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
+import useSEO, { SEO_CONFIGS } from '@/hooks/useSEO';
 import { Link } from 'react-router-dom';
 
 const Studio: React.FC = () => {
