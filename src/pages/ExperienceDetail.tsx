@@ -137,9 +137,13 @@ const ExperienceDetail: React.FC = () => {
       const { error } = await supabase
         .from('experience_inquiries')
         .insert([{
-          ...data,
-          experience_type: experienceType,
+          contact_name: data.contact_name,
+          contact_email: data.contact_email,
+          contact_phone: data.contact_phone,
           preferred_date: data.preferred_date || null,
+          group_size: data.group_size,
+          notes: data.notes || null,
+          experience_type: experienceType,
         }]);
 
       if (error) throw error;

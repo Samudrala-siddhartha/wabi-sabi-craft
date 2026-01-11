@@ -153,6 +153,31 @@ export const SEO_CONFIGS = {
     title: 'Admin Inquiries',
     description: 'View and respond to customer inquiries.',
   },
+  // New pages
+  testimonials: {
+    title: 'Testimonials',
+    description: 'Read what our customers say about their Basho by Shivangi experience.',
+  },
+  corporate: {
+    title: 'Corporate & Collaborations',
+    description: 'Partner with Basho for corporate gifting, team workshops, and brand collaborations.',
+  },
+  experiences: {
+    title: 'Experiences',
+    description: 'Book unique pottery experiences for couples, birthdays, and special occasions.',
+  },
+  adminTestimonials: {
+    title: 'Admin Testimonials',
+    description: 'Manage customer testimonials and reviews.',
+  },
+  adminCorporate: {
+    title: 'Admin Corporate',
+    description: 'View and manage corporate inquiries.',
+  },
+  adminExperiences: {
+    title: 'Admin Experiences',
+    description: 'Manage experience booking inquiries.',
+  },
 };
 
 export default useSEO;
