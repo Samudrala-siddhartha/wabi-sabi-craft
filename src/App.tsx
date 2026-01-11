@@ -24,12 +24,25 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+// New public pages
+import Testimonials from "./pages/Testimonials";
+import Corporate from "./pages/Corporate";
+import Experiences from "./pages/Experiences";
+import ExperienceDetail from "./pages/ExperienceDetail";
+import Philosophy from "./pages/Philosophy";
+import Studio from "./pages/Studio";
+import Gallery from "./pages/Gallery";
+// Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminWorkshops from "./pages/admin/AdminWorkshops";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminInquiries from "./pages/admin/AdminInquiries";
 import UploadProductImages from "./pages/admin/UploadProductImages";
+import AdminTestimonials from "./pages/admin/AdminTestimonials";
+import AdminCorporate from "./pages/admin/AdminCorporate";
+import AdminExperiences from "./pages/admin/AdminExperiences";
+import AdminGallery from "./pages/admin/AdminGallery";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,6 +82,14 @@ const App = () => (
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/cookie-policy" element={<CookiePolicy />} />
                 <Route path="/terms" element={<Terms />} />
+                {/* New Public Routes */}
+                <Route path="/testimonials" element={<Testimonials />} />
+                <Route path="/corporate" element={<Corporate />} />
+                <Route path="/experiences" element={<Experiences />} />
+                <Route path="/experiences/:type" element={<ExperienceDetail />} />
+                <Route path="/philosophy" element={<Philosophy />} />
+                <Route path="/studio" element={<Studio />} />
+                <Route path="/gallery" element={<Gallery />} />
                 {/* Admin Routes */}
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/products" element={<AdminProducts />} />
@@ -76,6 +97,10 @@ const App = () => (
                 <Route path="/admin/orders" element={<AdminOrders />} />
                 <Route path="/admin/inquiries" element={<AdminInquiries />} />
                 <Route path="/admin/upload-images" element={<UploadProductImages />} />
+                <Route path="/admin/testimonials" element={<AdminTestimonials />} />
+                <Route path="/admin/corporate" element={<AdminCorporate />} />
+                <Route path="/admin/experiences" element={<AdminExperiences />} />
+                <Route path="/admin/gallery" element={<AdminGallery />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
