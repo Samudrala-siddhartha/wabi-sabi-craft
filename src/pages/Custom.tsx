@@ -189,13 +189,55 @@ const Custom = () => {
       {/* Hero Section */}
       <section className="py-16 md:py-24 bg-secondary/30">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-serif text-foreground mb-6">
+          <span className="font-body text-sm tracking-[0.3em] text-muted-foreground uppercase">
+            Your Idea, Our Clay
+          </span>
+          <h1 className="text-4xl md:text-5xl font-serif text-foreground mb-6 mt-4">
             Custom Creations
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Have a unique vision? Let us bring it to life. Share your ideas and we'll craft 
-            a one-of-a-kind ceramic piece tailored to your needs.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Have a unique vision? Let us bring it to life. From an initial sketch to the final glaze, 
+            we craft one-of-a-kind ceramic pieces tailored to your needs.
           </p>
+        </div>
+      </section>
+
+      {/* Story Section - How Custom Pottery is Made */}
+      <section className="py-12 md:py-16 bg-[hsl(30,20%,96%)]">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-2xl md:text-3xl font-serif text-center text-foreground mb-8">
+            How Your Custom Piece Comes to Life
+          </h2>
+          <div className="grid md:grid-cols-4 gap-6 text-center">
+            <div className="p-4">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center text-primary font-display text-xl font-semibold">
+                1
+              </div>
+              <h3 className="font-display text-lg text-foreground mb-2">Share Your Vision</h3>
+              <p className="text-sm text-muted-foreground">Tell us about your idea, purpose, and any reference images.</p>
+            </div>
+            <div className="p-4">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center text-primary font-display text-xl font-semibold">
+                2
+              </div>
+              <h3 className="font-display text-lg text-foreground mb-2">Design & Quote</h3>
+              <p className="text-sm text-muted-foreground">We'll sketch concepts and provide a timeline and quote.</p>
+            </div>
+            <div className="p-4">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center text-primary font-display text-xl font-semibold">
+                3
+              </div>
+              <h3 className="font-display text-lg text-foreground mb-2">Handcraft & Fire</h3>
+              <p className="text-sm text-muted-foreground">Your piece is shaped, dried, glazed, and kiln-fired.</p>
+            </div>
+            <div className="p-4">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center text-primary font-display text-xl font-semibold">
+                4
+              </div>
+              <h3 className="font-display text-lg text-foreground mb-2">Delivery</h3>
+              <p className="text-sm text-muted-foreground">Carefully packaged and delivered to your doorstep.</p>
+            </div>
+          </div>
         </div>
       </section>
 

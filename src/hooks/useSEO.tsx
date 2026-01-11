@@ -195,6 +195,14 @@ export const SEO_CONFIGS = {
     title: 'Admin Gallery',
     description: 'Manage gallery images and media.',
   },
+  care: {
+    title: 'Care & Artisanship',
+    description: 'Learn about our craft process, materials, and how to care for your handmade pottery.',
+  },
+  exhibitions: {
+    title: 'Exhibitions & Pop-ups',
+    description: 'Discover upcoming exhibitions, pop-up markets, and past events featuring Basho pottery.',
+  },
 };
 
 export default useSEO;

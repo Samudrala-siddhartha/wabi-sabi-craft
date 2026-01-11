@@ -47,9 +47,10 @@ const Studio: React.FC = () => {
                   <div>
                     <h3 className="font-body font-medium text-foreground">Location</h3>
                     <p className="font-body text-muted-foreground">
-                      Basho by Shivangi Studio<br />
-                      Sector 15, Gurugram<br />
-                      Haryana 122001, India
+                      311, Silent Zone, Gavier<br />
+                      Dumas Road<br />
+                      Surat – 395007<br />
+                      Gujarat, India
                     </p>
                   </div>
                 </div>
@@ -70,9 +71,9 @@ const Studio: React.FC = () => {
                   <Phone className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-body font-medium text-foreground">Phone</h3>
-                    <p className="font-body text-muted-foreground">
-                      +91 98765 43210
-                    </p>
+                    <a href="tel:+919879575601" className="font-body text-muted-foreground hover:text-primary transition-colors">
+                      +91 9879575601
+                    </a>
                   </div>
                 </div>
 
@@ -80,9 +81,9 @@ const Studio: React.FC = () => {
                   <Mail className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-body font-medium text-foreground">Email</h3>
-                    <p className="font-body text-muted-foreground">
-                      hello@bashobyshivangi.com
-                    </p>
+                    <a href="mailto:bashobyyshivangi@gmail.com" className="font-body text-muted-foreground hover:text-primary transition-colors">
+                      bashobyyshivangi@gmail.com
+                    </a>
                   </div>
                 </div>
               </div>
@@ -107,19 +108,27 @@ const Studio: React.FC = () => {
             <div className="space-y-6">
               <div className="aspect-square md:aspect-[4/3] rounded-lg overflow-hidden border border-border">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3507.0517786064776!2d77.03891451507693!3d28.47022268247962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d19d4c7e3c4c3%3A0x8b1c7c7c7c7c7c7c!2sSector%2015%2C%20Gurugram%2C%20Haryana!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.8376!2d72.7546!3d21.0928!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04e00dead1111%3A0x1111111111111111!2sDumas%20Rd%2C%20Surat%2C%20Gujarat%20395007!5e0!3m2!1sen!2sin!4v1"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Basho Studio Location"
+                  title="Basho Studio Location - Dumas Road, Surat"
                 />
               </div>
-              <p className="font-body text-sm text-muted-foreground text-center">
-                Free parking available. Metro: Sector 15 (Yellow Line)
-              </p>
+              <div className="text-center">
+                <a
+                  href="https://maps.google.com/?q=311+Silent+Zone+Gavier+Dumas+Road+Surat+395007"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-body"
+                >
+                  <MapPin className="h-4 w-4" />
+                  Open in Google Maps
+                </a>
+              </div>
             </div>
           </div>
         </div>

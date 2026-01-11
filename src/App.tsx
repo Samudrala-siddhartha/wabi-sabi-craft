@@ -32,6 +32,8 @@ import ExperienceDetail from "./pages/ExperienceDetail";
 import Philosophy from "./pages/Philosophy";
 import Studio from "./pages/Studio";
 import Gallery from "./pages/Gallery";
+import Care from "./pages/Care";
+import Exhibitions from "./pages/Exhibitions";
 // Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
@@ -90,6 +92,8 @@ const App = () => (
                 <Route path="/philosophy" element={<Philosophy />} />
                 <Route path="/studio" element={<Studio />} />
                 <Route path="/gallery" element={<Gallery />} />
+                <Route path="/care" element={<Care />} />
+                <Route path="/exhibitions" element={<Exhibitions />} />
                 {/* Admin Routes */}
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/products" element={<AdminProducts />} />
