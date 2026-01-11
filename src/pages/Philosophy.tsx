@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/layout/Layout';
-import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
+import useSEO, { SEO_CONFIGS } from '@/hooks/useSEO';
 
 const Philosophy: React.FC = () => {
   useSEO(SEO_CONFIGS.philosophy);

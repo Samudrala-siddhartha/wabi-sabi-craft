@@ -178,6 +178,23 @@ export const SEO_CONFIGS = {
     title: 'Admin Experiences',
     description: 'Manage experience booking inquiries.',
   },
+  // Gallery, Philosophy, Studio pages
+  gallery: {
+    title: 'Gallery',
+    description: 'Explore our visual gallery of handcrafted pottery, workshops, and studio events.',
+  },
+  philosophy: {
+    title: 'Our Philosophy',
+    description: 'Discover the Wabi-Sabi philosophy behind Basho by Shivangi and our approach to handcrafted pottery.',
+  },
+  studio: {
+    title: 'Visit Our Studio',
+    description: 'Plan your visit to Basho studio for collections, exhibitions, and pottery experiences.',
+  },
+  adminGallery: {
+    title: 'Admin Gallery',
+    description: 'Manage gallery images and media.',
+  },
 };
 
 export default useSEO;
