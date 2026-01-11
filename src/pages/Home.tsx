@@ -9,7 +9,7 @@ import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-shivangi.png';
-import heroMobileImage from '@/assets/hero-mobile.png';
+import heroMobileImage from '@/assets/hero-mobile-new.jpg';
 import founderImage from '@/assets/founder-shivangi.png';
 import galleryBowls from '@/assets/gallery-bowls.jpg';
 
