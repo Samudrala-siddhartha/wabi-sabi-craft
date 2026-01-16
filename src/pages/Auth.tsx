@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import PasswordStrengthIndicator from '@/components/ui/PasswordStrengthIndicator';
 import bashoLogo from '@/assets/basho-logo-new.jpg';
 import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
@@ -203,6 +204,7 @@ const Auth: React.FC = () => {
                       {signupForm.formState.errors.password.message}
                     </p>
                   )}
+                  <PasswordStrengthIndicator password={signupForm.watch('password') || ''} />
                 </div>
 
                 <div>
