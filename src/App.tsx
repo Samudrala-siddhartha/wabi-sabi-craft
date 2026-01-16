@@ -16,7 +16,6 @@ import WorkshopDetail from "./pages/WorkshopDetail";
 import Sessions from "./pages/Sessions";
 import Custom from "./pages/Custom";
 import Auth from "./pages/Auth";
-import AuthCallback from "./pages/AuthCallback";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Activity from "./pages/Activity";
@@ -79,7 +78,6 @@ const App = () => (
                 <Route path="/login" element={<Auth />} />
                 <Route path="/signup" element={<Auth />} />
                 <Route path="/auth" element={<Auth />} />
-                <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/activity" element={<Activity />} />
