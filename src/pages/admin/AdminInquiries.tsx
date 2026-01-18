@@ -34,7 +34,13 @@ import { Tables } from '@/integrations/supabase/types';
 import { format } from 'date-fns';
 import { useSEO, SEO_CONFIGS } from '@/hooks/useSEO';
 
-type Inquiry = Tables<'session_inquiries'>;
+type Inquiry = Tables<'session_inquiries'> & {
+  profiles?: {
+    first_name: string | null;
+    last_name: string | null;
+    email: string | null;
+  } | null;
+};
 
 const statusOptions = ['pending', 'contacted', 'scheduled', 'completed', 'cancelled'];
 
@@ -49,10 +55,17 @@ const AdminInquiries: React.FC = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('session_inquiries')
-        .select('*')
+        .select(`
+          *,
+          profiles!session_inquiries_user_id_profiles_fkey (
+            first_name,
+            last_name,
+            email
+          )
+        `)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return data;
+      return data as Inquiry[];
     },
   });
 
@@ -137,10 +150,17 @@ const AdminInquiries: React.FC = () => {
                         </span>
                       </TableCell>
                       <TableCell>
-                        <p className="font-medium">{inquiry.contact_name || '-'}</p>
+                        <p className="font-medium">
+                          {inquiry.contact_name || 
+                            (inquiry.profiles 
+                              ? `${inquiry.profiles.first_name || ''} ${inquiry.profiles.last_name || ''}`.trim() 
+                              : '-') || '-'}
+                        </p>
                       </TableCell>
                       <TableCell>
-                        <p className="text-sm">{inquiry.contact_email || '-'}</p>
+                        <p className="text-sm">
+                          {inquiry.contact_email || inquiry.profiles?.email || '-'}
+                        </p>
                         {inquiry.contact_phone && (
                           <span className="text-xs text-muted-foreground">{inquiry.contact_phone}</span>
                         )}
@@ -210,11 +230,16 @@ const AdminInquiries: React.FC = () => {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <span className="text-muted-foreground">Name</span>
-                      <p className="font-medium">{selectedInquiry.contact_name || 'Not provided'}</p>
+                      <p className="font-medium">
+                        {selectedInquiry.contact_name || 
+                          (selectedInquiry.profiles 
+                            ? `${selectedInquiry.profiles.first_name || ''} ${selectedInquiry.profiles.last_name || ''}`.trim() 
+                            : 'Not provided') || 'Not provided'}
+                      </p>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Email</span>
-                      <p>{selectedInquiry.contact_email || 'Not provided'}</p>
+                      <p>{selectedInquiry.contact_email || selectedInquiry.profiles?.email || 'Not provided'}</p>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Phone</span>
