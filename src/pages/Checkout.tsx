@@ -56,6 +56,7 @@ interface RazorpayResponse {
 
 const addressSchema = z.object({
   name: z.string().trim().min(2, 'Name is required').max(100),
+  email: z.string().email('Valid email is required'),
   address_line_1: z.string().trim().min(5, 'Address is required').max(200),
   address_line_2: z.string().max(200).optional(),
   city: z.string().trim().min(2, 'City is required').max(100),
@@ -307,6 +308,21 @@ const Checkout: React.FC = () => {
                     />
                     {errors.name && (
                       <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
+                    )}
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      {...register('email')}
+                      defaultValue={user?.email || ''}
+                      placeholder="Email address"
+                      className="mt-1"
+                    />
+                    {errors.email && (
+                      <p className="text-destructive text-sm mt-1">{errors.email.message}</p>
                     )}
                   </div>
 
