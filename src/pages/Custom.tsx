@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Palette, Image, Heart, Phone } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useSEO, SEO_CONFIGS } from "@/hooks/useSEO";
 
@@ -43,10 +45,36 @@ const Custom = () => {
   
   const [productType, setProductType] = useState<string>("");
   const [textNotes, setTextNotes] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  // Fetch user profile for auto-fill
+  const { data: userProfile } = useQuery({
+    queryKey: ['user-profile-custom', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, email')
+        .eq('user_id', user!.id)
+        .single();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  // Auto-fill contact fields when profile loads
+  useEffect(() => {
+    if (userProfile) {
+      const fullName = `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim();
+      if (fullName && !contactName) setContactName(fullName);
+      if (userProfile.email && !contactEmail) setContactEmail(userProfile.email);
+    }
+  }, [userProfile]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -97,6 +125,16 @@ const Custom = () => {
       return;
     }
 
+    // Validate required fields
+    if (!contactName.trim() || !contactEmail.trim() || !contactPhone.trim()) {
+      toast({
+        title: "Missing required fields",
+        description: "Please fill in your name, email, and phone number.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const notes = productType ? `[${productType}] ${textNotes}` : textNotes;
     
     if (!notes.trim() && !imageFile) {
@@ -131,13 +169,16 @@ const Custom = () => {
         imageUrl = publicUrl;
       }
 
-      // Insert custom request without product_id
+      // Insert custom request with contact details
       const { error } = await supabase
         .from('custom_requests')
         .insert({
           user_id: user.id,
           text_notes: notes.trim() || null,
           image_url: imageUrl,
+          contact_name: contactName.trim(),
+          contact_email: contactEmail.trim(),
+          contact_phone: contactPhone.trim(),
           status: 'submitted',
         });
 
@@ -146,6 +187,7 @@ const Custom = () => {
       // Reset form
       setProductType("");
       setTextNotes("");
+      setContactPhone("");
       setImageFile(null);
       setImagePreview(null);
       setShowConfirmation(true);
@@ -296,6 +338,42 @@ const Custom = () => {
 
           {user ? (
             <form onSubmit={handleSubmit} className="space-y-6 bg-card p-6 md:p-8 rounded-lg shadow-sm">
+              {/* Contact Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="contact-name">Your Name *</Label>
+                  <Input
+                    id="contact-name"
+                    placeholder="Full Name"
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="contact-phone">Mobile Number *</Label>
+                  <Input
+                    id="contact-phone"
+                    type="tel"
+                    placeholder="+91 98765 43210"
+                    value={contactPhone}
+                    onChange={(e) => setContactPhone(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contact-email">Email Address *</Label>
+                <Input
+                  id="contact-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                  required
+                />
+              </div>
+
               {/* Product Type */}
               <div className="space-y-2">
                 <Label htmlFor="product-type">Product Type (optional)</Label>
@@ -368,7 +446,7 @@ const Custom = () => {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={isSubmitting || (!textNotes.trim() && !imageFile)}
+                disabled={isSubmitting || !contactName.trim() || !contactEmail.trim() || !contactPhone.trim() || (!textNotes.trim() && !imageFile)}
               >
                 {isSubmitting ? "Submitting..." : "Submit Request"}
               </Button>

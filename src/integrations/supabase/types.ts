@@ -85,6 +85,9 @@ export type Database = {
       }
       custom_requests: {
         Row: {
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           created_at: string
           id: string
           image_url: string | null
@@ -95,6 +98,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
@@ -105,6 +111,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
@@ -121,6 +130,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custom_requests_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
           },
         ]
       }

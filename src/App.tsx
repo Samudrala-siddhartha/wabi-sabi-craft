@@ -45,6 +45,7 @@ import AdminTestimonials from "./pages/admin/AdminTestimonials";
 import AdminCorporate from "./pages/admin/AdminCorporate";
 import AdminExperiences from "./pages/admin/AdminExperiences";
 import AdminGallery from "./pages/admin/AdminGallery";
+import AdminCustomRequests from "./pages/admin/AdminCustomRequests";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -106,6 +107,7 @@ const App = () => (
                 <Route path="/admin/corporate" element={<AdminCorporate />} />
                 <Route path="/admin/experiences" element={<AdminExperiences />} />
                 <Route path="/admin/gallery" element={<AdminGallery />} />
+                <Route path="/admin/custom-requests" element={<AdminCustomRequests />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
