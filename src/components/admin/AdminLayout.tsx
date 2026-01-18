@@ -13,7 +13,8 @@ import {
   Quote,
   Building2,
   Sparkles,
-  Image
+  Image,
+  Palette
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -29,6 +30,7 @@ const navItems = [
   { href: '/admin/workshops', label: 'Workshops', icon: Calendar },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { href: '/admin/inquiries', label: 'Session Inquiries', icon: MessageSquare },
+  { href: '/admin/custom-requests', label: 'Custom Requests', icon: Palette },
   { href: '/admin/testimonials', label: 'Testimonials', icon: Quote },
   { href: '/admin/corporate', label: 'Corporate', icon: Building2 },
   { href: '/admin/experiences', label: 'Experiences', icon: Sparkles },
