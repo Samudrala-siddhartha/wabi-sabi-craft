@@ -342,6 +342,9 @@ export type Database = {
       session_inquiries: {
         Row: {
           admin_notes: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           created_at: string
           id: string
           message: string
@@ -352,6 +355,9 @@ export type Database = {
         }
         Insert: {
           admin_notes?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           id?: string
           message: string
@@ -362,6 +368,9 @@ export type Database = {
         }
         Update: {
           admin_notes?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           id?: string
           message?: string

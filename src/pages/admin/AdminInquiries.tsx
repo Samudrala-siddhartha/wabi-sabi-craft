@@ -118,6 +118,8 @@ const AdminInquiries: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Date</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
                     <TableHead>Message</TableHead>
                     <TableHead>Preferred Date</TableHead>
                     <TableHead>Status</TableHead>
@@ -133,6 +135,15 @@ const AdminInquiries: React.FC = () => {
                         <span className="text-xs text-muted-foreground">
                           {format(new Date(inquiry.created_at), 'h:mm a')}
                         </span>
+                      </TableCell>
+                      <TableCell>
+                        <p className="font-medium">{inquiry.contact_name || '-'}</p>
+                      </TableCell>
+                      <TableCell>
+                        <p className="text-sm">{inquiry.contact_email || '-'}</p>
+                        {inquiry.contact_phone && (
+                          <span className="text-xs text-muted-foreground">{inquiry.contact_phone}</span>
+                        )}
                       </TableCell>
                       <TableCell className="max-w-xs">
                         <p className="line-clamp-2 text-sm">{inquiry.message}</p>
@@ -193,6 +204,25 @@ const AdminInquiries: React.FC = () => {
             </DialogHeader>
             {selectedInquiry && (
               <div className="space-y-6">
+                {/* Contact Info */}
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2">Contact Information</h4>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Name</span>
+                      <p className="font-medium">{selectedInquiry.contact_name || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Email</span>
+                      <p>{selectedInquiry.contact_email || 'Not provided'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Phone</span>
+                      <p>{selectedInquiry.contact_phone || 'Not provided'}</p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Inquiry Info */}
                 <div className="space-y-4">
                   <div>
