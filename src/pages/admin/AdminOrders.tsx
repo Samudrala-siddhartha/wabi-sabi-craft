@@ -42,14 +42,27 @@ interface CartItem {
 }
 
 interface ShippingAddress {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  pincode: string;
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  address_line_1?: string;
+  address_line_2?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  postal_code?: string;
+  country?: string;
+}
+
+interface OrderWithProfile extends Order {
+  profiles?: {
+    first_name: string | null;
+    last_name: string | null;
+    email: string | null;
+  } | null;
 }
 
 const statusOptions = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
@@ -64,10 +77,17 @@ const AdminOrders: React.FC = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('orders')
-        .select('*')
+        .select(`
+          *,
+          profiles!orders_user_id_profiles_fkey (
+            first_name,
+            last_name,
+            email
+          )
+        `)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return data;
+      return data as OrderWithProfile[];
     },
   });
 
@@ -145,8 +165,15 @@ const AdminOrders: React.FC = () => {
                   {orders.map((order) => {
                     const items = parseItems(order.items);
                     const address = parseAddress(order.shipping_address);
-                    const customerName = address ? `${address.firstName} ${address.lastName}` : '-';
-                    const customerEmail = address?.email || '';
+                    // Get customer name: prefer shipping_address.name, fallback to firstName/lastName, then profile
+                    const customerName = address?.name 
+                      || (address?.firstName && address?.lastName ? `${address.firstName} ${address.lastName}` : null)
+                      || (order.profiles?.first_name && order.profiles?.last_name ? `${order.profiles.first_name} ${order.profiles.last_name}` : null)
+                      || '-';
+                    // Get email: prefer shipping_address.email, fallback to profile
+                    const customerEmail = address?.email || order.profiles?.email || '';
+                    // Get phone from shipping address
+                    const customerPhone = address?.phone || '';
                     return (
                       <TableRow key={order.id}>
                         <TableCell className="font-mono text-sm">
@@ -155,7 +182,10 @@ const AdminOrders: React.FC = () => {
                         <TableCell>
                           <p className="font-medium">{customerName}</p>
                           {customerEmail && (
-                            <span className="text-xs text-muted-foreground">{customerEmail}</span>
+                            <p className="text-xs text-muted-foreground">{customerEmail}</p>
+                          )}
+                          {customerPhone && (
+                            <p className="text-xs text-muted-foreground">{customerPhone}</p>
                           )}
                         </TableCell>
                         <TableCell>
@@ -247,14 +277,29 @@ const AdminOrders: React.FC = () => {
                     <h3 className="font-semibold mb-2">Shipping Address</h3>
                     {(() => {
                       const address = parseAddress(selectedOrder.shipping_address);
+                      const profile = (selectedOrder as OrderWithProfile).profiles;
                       if (!address) return <p className="text-muted-foreground text-sm">No address provided</p>;
+                      
+                      // Build display values with fallbacks
+                      const displayName = address.name 
+                        || (address.firstName && address.lastName ? `${address.firstName} ${address.lastName}` : null)
+                        || (profile?.first_name && profile?.last_name ? `${profile.first_name} ${profile.last_name}` : 'N/A');
+                      const displayEmail = address.email || profile?.email || 'N/A';
+                      const displayPhone = address.phone || 'N/A';
+                      const displayAddress = address.address_line_1 || address.address || '';
+                      const displayAddress2 = address.address_line_2 || '';
+                      const displayCity = address.city || '';
+                      const displayState = address.state || '';
+                      const displayPostal = address.postal_code || address.pincode || '';
+                      
                       return (
                         <div className="text-sm bg-muted/50 p-4 rounded-lg">
-                          <p className="font-medium">{address.firstName} {address.lastName}</p>
-                          <p>{address.address}</p>
-                          <p>{address.city}, {address.state} - {address.pincode}</p>
-                          <p className="mt-2">Phone: {address.phone}</p>
-                          <p>Email: {address.email}</p>
+                          <p className="font-medium">{displayName}</p>
+                          <p>{displayAddress}</p>
+                          {displayAddress2 && <p>{displayAddress2}</p>}
+                          <p>{displayCity}, {displayState} - {displayPostal}</p>
+                          <p className="mt-2">Phone: {displayPhone}</p>
+                          <p>Email: {displayEmail}</p>
                         </div>
                       );
                     })()}
