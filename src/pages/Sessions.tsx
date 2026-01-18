@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Calendar, Clock, Send } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,20 @@ const Sessions: React.FC = () => {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Fetch user profile to auto-fill form
+  const { data: userProfile } = useQuery({
+    queryKey: ['user-profile', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, email')
+        .eq('user_id', user!.id)
+        .single();
+      return data;
+    },
+    enabled: !!user,
+  });
+
   const {
     register,
     handleSubmit,
@@ -36,6 +51,19 @@ const Sessions: React.FC = () => {
   } = useForm<InquiryForm>({
     resolver: zodResolver(inquirySchema),
   });
+
+  // Pre-fill form with user profile data
+  useEffect(() => {
+    if (userProfile) {
+      reset({
+        contact_name: `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim(),
+        contact_email: userProfile.email || '',
+        contact_phone: '',
+        message: '',
+        preferred_date: '',
+      });
+    }
+  }, [userProfile, reset]);
 
   const onSubmit = async (data: InquiryForm) => {
     if (!user) {
