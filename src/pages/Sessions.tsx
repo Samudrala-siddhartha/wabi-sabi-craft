@@ -14,6 +14,9 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
 const inquirySchema = z.object({
+  contact_name: z.string().min(2, 'Please enter your name'),
+  contact_email: z.string().email('Please enter a valid email'),
+  contact_phone: z.string().min(10, 'Please enter a valid phone number'),
   message: z.string().min(10, 'Please provide more details about your session'),
   preferred_date: z.string().optional(),
 });
@@ -46,6 +49,9 @@ const Sessions: React.FC = () => {
     try {
       const { error } = await supabase.from('session_inquiries').insert({
         user_id: user.id,
+        contact_name: data.contact_name,
+        contact_email: data.contact_email,
+        contact_phone: data.contact_phone,
         message: data.message,
         preferred_date: data.preferred_date ? new Date(data.preferred_date).toISOString() : null,
       });
@@ -137,6 +143,48 @@ const Sessions: React.FC = () => {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="contact_name">Your Name</Label>
+                      <Input
+                        id="contact_name"
+                        {...register('contact_name')}
+                        placeholder="Enter your name"
+                        className="mt-1"
+                      />
+                      {errors.contact_name && (
+                        <p className="text-destructive text-sm mt-1">{errors.contact_name.message}</p>
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor="contact_email">Email</Label>
+                      <Input
+                        id="contact_email"
+                        type="email"
+                        {...register('contact_email')}
+                        placeholder="Enter your email"
+                        className="mt-1"
+                      />
+                      {errors.contact_email && (
+                        <p className="text-destructive text-sm mt-1">{errors.contact_email.message}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="contact_phone">Phone Number</Label>
+                    <Input
+                      id="contact_phone"
+                      type="tel"
+                      {...register('contact_phone')}
+                      placeholder="Enter your phone number"
+                      className="mt-1"
+                    />
+                    {errors.contact_phone && (
+                      <p className="text-destructive text-sm mt-1">{errors.contact_phone.message}</p>
+                    )}
+                  </div>
+
                   <div>
                     <Label htmlFor="message">What would you like to learn or create?</Label>
                     <Textarea

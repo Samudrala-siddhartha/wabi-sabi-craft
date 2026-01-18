@@ -133,6 +133,7 @@ const AdminOrders: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Order ID</TableHead>
+                    <TableHead>Customer</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Items</TableHead>
                     <TableHead>Total</TableHead>
@@ -143,10 +144,19 @@ const AdminOrders: React.FC = () => {
                 <TableBody>
                   {orders.map((order) => {
                     const items = parseItems(order.items);
+                    const address = parseAddress(order.shipping_address);
+                    const customerName = address ? `${address.firstName} ${address.lastName}` : '-';
+                    const customerEmail = address?.email || '';
                     return (
                       <TableRow key={order.id}>
                         <TableCell className="font-mono text-sm">
                           #{order.id.slice(0, 8)}
+                        </TableCell>
+                        <TableCell>
+                          <p className="font-medium">{customerName}</p>
+                          {customerEmail && (
+                            <span className="text-xs text-muted-foreground">{customerEmail}</span>
+                          )}
                         </TableCell>
                         <TableCell>
                           {format(new Date(order.created_at), 'MMM d, yyyy')}
